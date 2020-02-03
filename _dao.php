@@ -1,7 +1,5 @@
 <?php
 
-// Prueba Alain
-
 class DAO
 {
     private static $pdo = null;
