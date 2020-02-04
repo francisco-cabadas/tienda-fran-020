@@ -59,8 +59,9 @@ class DAO
         return $datos;
     }
 
-    public static function productoObtenerPorId(int $id){
-        $rs=self::ejecutarConsulta("select * from producto where id=?",[$id]);
+    public static function productoObtenerPorId(int $id)
+    {
+        $rs = self::ejecutarConsulta("select * from producto where id=?", [$id]);
         $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
         return $producto;
     }
@@ -74,10 +75,10 @@ class DAO
     public static function carritoObtenerParaCliente(int $id): Carrito
     {
 
-        $rs =self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ",[$id]);
-        if(!$rs){
+        $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ", [$id]);
+        if (!$rs) {
             self::carritoCrearParaCliente($id);
-            $rs=self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ",[$id]);
+            $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ", [$id]);
 
         }
 
@@ -91,37 +92,86 @@ class DAO
         return $carrito;
     }
 
-    private static function carritoObtenerUnidadesProducto($clienteId, $productoId, $pedidoId){
+    private static function carritoObtenerUnidadesProducto($clienteId, $productoId, $pedidoId)
+    {
         self::ejecutarConsulta("SELECT unidades, pedido_id FROM linea, pedido WHERE pedido.id=linea.pedido_id AND cliente_id=? AND producto_id=? ", [$clienteId, $productoId]);
     }
 
-    private static function carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId){
+    private static function carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId)
+    {
         $rs = carritoObtenerUnidadesProducto($clienteId, $productoId);
         // $rsPrecio= self::ejecutarConsulta("SELECT precio FROM producto WHERE id=? ", [$productoId]);
         // $precioProducto=$rsPrecio[0]['precio'];
-        if (!$rs && $nuevaCantidadUnidades>1){
+        if (!$rs && $nuevaCantidadUnidades > 1) {
             self::ejecutarConsulta("INSERT INTO linea (pedidoId, producto_id, unidades, precioUnitario) VALUES (?, ?, ?, NULL )", [$pedidoId, $productoId, $nuevaCantidadUnidades]);
             // PrecioUnitario en vez de null-> $precioProducto*$nuevaCantidadUnidades
-        }
-        else if($rs && $nuevaCantidadUnidades>1){
+        } else if ($rs && $nuevaCantidadUnidades > 1) {
             self::ejecutarConsulta("UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?", [$nuevaCantidadUnidades, $pedidoId, $productoId]);
             // Habria que añadir al set el PrecioUnitario ($precioProducto * $nuevaCantidadUnidades)
-        }
-        else if ($rs && $nuevaCantidadUnidades<=0) {
+        } else if ($rs && $nuevaCantidadUnidades <= 0) {
             self::ejecutarConsulta("DELETE FROM linea WHERE pedido_id=? AND producto_id=?", [$pedidoId, $productoId]);
         }
         /* else { // Quieren quitar unidades de un prodcuto que no existe, informar al usuario de ello.
          */
     }
 
-    public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades) {
+    public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades)
+    {
         $rs = carritoObtenerUnidadesProducto($clienteId, $productoId);
-        $pedidoId=$rs[0]['pedido_id'];
-        if (!$rs){
+        $pedidoId = $rs[0]['pedido_id'];
+        if (!$rs) {
             $nuevaCantidadUnidades = $variacionUnidades;
-        }
-        else {
+        } else {
             $nuevaCantidadUnidades = $variacionUnidades + $rs[0]['unidades'];
         }
         self::carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId);
-    }}
+    }
+
+    public static function inicioSesionDao()
+    {
+        $correcto=false;
+        if (isset($_SESSION['sesionIniciada'])) {
+            $correcto = true;
+
+        } else if (!isset($_SESSION['sesionIniciada']) && isset($_REQUEST['contrasenna']) && isset($_REQUEST['email'])) {
+
+            $rs=self::ejecutarConsulta("select * from cliente where email =? and contrasenna =?",[$_REQUEST['email'], $_REQUEST['contrasenna']]);
+            if ($rs) {
+                $correcto = true;
+
+                $idUsuario = $rs[0]["id"];
+                $_SESSION['sesionIniciada'] = true;
+                $_SESSION["identificador"] = $idUsuario;
+
+                if (isset($_REQUEST["guardar_clave"]) && $_REQUEST["guardar_clave"] == "1") {
+                    mt_srand(time());
+                    $numero_aleatorio = mt_rand(1000000, 999999999);
+                    self::ejecutarConsulta("update cliente set codigoCookie=? where id=?",[$numero_aleatorio, $idUsuario]);
+                    setcookie("CookieId", $idUsuario, time() + (60 * 60 * 24 * 365));
+                    setcookie("CookieNumAleatorio", $numero_aleatorio, time() + (60 * 60 * 24 * 365));
+                }
+            } else {
+                setcookie('incorrecto', true, time() + 60 * 60);
+
+                $correcto = false;
+            }
+        } else if (!isset($_SESSION['sesionIniciada']) && isset($_COOKIE["CookieId"]) && isset($_COOKIE["CookieNumAleatorio"])) {
+            $rs=self::ejecutarConsulta("select * from cliente where id=? and codigoCookie=?",[$_COOKIE["CookieId"], $_COOKIE["CookieNumAleatorio"]]);
+            if ($rs) {
+                $_SESSION['sesionIniciada'] = true;
+                $_SESSION["identificador"] = $_COOKIE["CookieId"];
+                $correcto = true;
+            } else {
+                setcookie("CookieId", 0, time() - 3600);
+                setcookie("CookieNumAleatorio", 0, time() - 3600);
+
+            }
+
+        } else {
+
+            $correcto = false;
+        }
+        return $correcto;
+
+    }
+}
