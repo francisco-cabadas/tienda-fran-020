@@ -127,7 +127,7 @@ class DAO
         self::carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId);
     }
 
-    public static function inicioSesionDao()
+    public static function inicioSesion()
     {
         $correcto=false;
         if (isset($_SESSION['sesionIniciada'])) {
