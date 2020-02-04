@@ -22,6 +22,6 @@ if ($variacionUnidades > 0) { // Si la variacion es mayor que 1 significa que qu
 
     }
 }
-
+//
 
 ?>
