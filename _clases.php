@@ -1,12 +1,11 @@
 <?php
 
-abstract class Dato {
+abstract class Dato
+{
 }
 
-abstract class DatoSinIdPropia extends Dato {
-}
-
-abstract class DatoConIdPropia extends Dato {
+trait Identificable
+{
     protected $id;
 
     public function getId(): int
@@ -20,7 +19,10 @@ abstract class DatoConIdPropia extends Dato {
     }
 }
 
-class Producto extends DatoConIdPropia {
+class Producto extends Dato
+{
+    use Identificable;
+
     private $nombre;
     private $descripcion;
     private $precio;
@@ -72,5 +74,226 @@ class Producto extends DatoConIdPropia {
     public function generarPrecioFormateado(): string
     {
         return number_format ($this->getPrecio(), 2) . "€";
+    }
+}
+
+abstract class ProtoPedido extends Dato
+{
+    private int $cliente_id;
+    private array $lineas;
+
+    public function __construct(int $cliente_id, array $lineas)
+    {
+        $this->cliente_id = $cliente_id;
+        $this->lineas = $lineas;
+    }
+
+    public function getClienteId(): int
+    {
+        return $this->cliente_id;
+    }
+
+    public function setClienteId(int $cliente_id)
+    {
+        $this->cliente_id = $cliente_id;
+    }
+
+    public function getLineas(): array
+    {
+        return $this->lineas;
+    }
+
+    public function setLineas(array $lineas): void
+    {
+        $this->lineas = $lineas;
+    }
+}
+
+class Carrito extends ProtoPedido {
+
+    public function __construct($cliente_id, array $lineas)
+    {
+        parent::__construct($cliente_id, $lineas);
+    }
+}
+
+class Pedido extends ProtoPedido {
+    use Identificable;
+
+    private string $direccionEnvio;
+    private object $fechaConfirmacion; // $now = date("Y-m-d H:i:s"); tendriamos en la variable 2020-09-01 11:48 y es compatible con datetime de mysql
+
+    public function __constructPedido(int $id, int $cliente_id, string $direccionEnvio, object $fechaConfirmacion, array $lineas)
+    {
+        parent::__construct($cliente_id, $lineas);
+
+        $this->setId($id);
+        $this->setDireccionEnvio($direccionEnvio);
+        $this->getFechaConfirmacion($fechaConfirmacion);
+    }
+
+    public function getDireccionEnvio()
+    {
+        return $this->direccionEnvio;
+    }
+
+    public function setDireccionEnvio($direccionEnvio)
+    {
+        $this->direccionEnvio = $direccionEnvio;
+    }
+
+    public function getFechaConfirmacion()
+    {
+        return $this->fechaConfirmacion;
+    }
+
+    public function setFechaConfirmacion($fechaConfirmacion)
+    {
+        $this->fechaConfirmacion = $fechaConfirmacion;
+    }
+}
+
+abstract class ProtoLinea
+{
+    private int $producto_id;
+    private int $unidades;
+
+    public function __construct(int $producto_id, int $unidades)
+    {
+        $this->$producto_id = $producto_id;
+        $this->$unidades = $unidades;
+    }
+
+    public function getProductoId()
+    {
+        return $this->producto_id;
+    }
+
+    public function setProductoId($producto_id)
+    {
+        $this->producto_id = $producto_id;
+    }
+
+    public function getUnidades()
+    {
+        return $this->unidades;
+    }
+
+    public function setUnidades($unidades)
+    {
+        $this->unidades = $unidades;
+    }
+}
+
+class LineaCarrito extends ProtoLinea
+{
+    public function __construct(int $producto_id, int $unidades)
+    {
+        parent::__construct($producto_id, $unidades);
+    }
+}
+
+class LineaPedido extends ProtoLinea
+{
+    private float $precioUnitario;
+
+    public function __construct(int $producto_id, int $unidades, float $precioUnitario)
+    {
+        parent::__construct($producto_id, $unidades);
+
+        $this->setPrecioUnitario($precioUnitario);
+    }
+
+    public function getPrecioUnitario()
+    {
+        return $this->precioUnitario;
+    }
+
+    public function setPrecioUnitario($precioUnitario)
+    {
+        $this->precioUnitario = $precioUnitario;
+    }
+}
+
+class Cliente extends Dato {
+    use Identificable;
+
+    private string $email;
+    private string $contrasenna;
+    private string $codigoCookie;
+    private string $nombre;
+    private string $telefono;
+    private string $direccion;
+
+    public function __construct($id, $email, $contrasenna, $codigoCookie, $nombre, $telefono, $direccion)
+    {
+        $this->setId($id);
+        $this->setEmail($email);
+        $this->setContrasenna($contrasenna);
+        $this->setCodigoCookie($codigoCookie);
+        $this->setNombre($nombre);
+        $this->setTelefono($telefono);
+        $this->setDireccion($direccion);
+
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    public function getContrasenna()
+    {
+        return $this->contrasenna;
+    }
+
+    public function setContrasenna($contrasenna)
+    {
+        $this->contrasenna = $contrasenna;
+    }
+
+    public function getCodigoCookie()
+    {
+        return $this->codigoCookie;
+    }
+
+    public function setCodigoCookie($codigoCookie)
+    {
+        $this->codigoCookie = $codigoCookie;
+    }
+
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
+
+    public function getTelefono()
+    {
+        return $this->telefono;
+    }
+
+    public function setTelefono($telefono)
+    {
+        $this->telefono = $telefono;
+    }
+
+    public function getDireccion()
+    {
+        return $this->direccion;
+    }
+
+    public function setDireccion($direccion)
+    {
+        $this->direccion = $direccion;
     }
 }
