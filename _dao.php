@@ -1,10 +1,14 @@
 <?php
 
+// Prueba Alain
+
+require_once "_clases.php";
+
 class DAO
 {
     private static $pdo = null;
 
-    private function obtenerPdoConexion()
+    private function obtenerPdoConexionBD()
     {
         $servidor = "localhost";
         $identificador = "root";
@@ -23,38 +27,25 @@ class DAO
             exit("Error al conectar");
         }
 
-
-
-
         return $pdo;
     }
 
-// Esta función redirige a otra página y deja de ejecutar el PHP que la llamó:
-    function redireccionar($url)
-    {
-        header("Location: $url");
-        exit();
-    }
-
-
     private static function ejecutarConsulta(string $sql, array $parametros): array
     {
-        if (!isset(self::$pdo)) {
-            self::$pdo =self::obtenerPdoConexion();
-            $select= self::$pdo->prepare($sql);
-            $select->execute($parametros);
-            return $select->fetchAll();
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
 
-        }
-
-
+        $select = self::$pdo->prepare($sql);
+        $select->execute($parametros);
+        return $select->fetchAll();
     }
 
-    /* private static function ejecutarActualizacion()
-     {
-         if (!isset($pdo)) {
-         }
-     }*/
+    private static function ejecutarActualizacion(string $sql, array $parametros): void
+    {
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
+
+        $actualizacion = self::$pdo->prepare($sql);
+        $actualizacion->execute($parametros);
+    }
 
     public static function productoObtenerTodos(): array
     {
@@ -67,37 +58,43 @@ class DAO
         }
         return $datos;
     }
+
     public static function productoObtenerPorId(int $id){
         $rs=self::ejecutarConsulta("select * from producto where id=?",[$id]);
         $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
         return $producto;
     }
 
-    private static function carritoCrearParaCliente(int $id): Carrito{
+    private static function carritoCrearParaCliente(int $id)
+    {
         self::ejecutarConsulta("INSERT INTO pedido (cliente_id, direccionEnvio, fechaConfirmacion) VALUES (?, NULL, NULL) ", [$id]);
+        // TODO Parece que esto no actúa: hay que mirar qué pasa.
     }
 
-    public static function carritoObtenerParaCliente(int $id): Carrito{
+    public static function carritoObtenerParaCliente(int $id): Carrito
+    {
 
         $rs =self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ",[$id]);
         if(!$rs){
-
             self::carritoCrearParaCliente($id);
             $rs=self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ",[$id]);
 
         }
 
-        $carrito= new Carrito (
+        $carrito = new Carrito (
             $rs[0]['id'],
             $rs[0]['cliente_id'],
             $rs[0]['direccionEnvio'],
             $rs[0]['fechaConfirmacion']
         );
+
         return $carrito;
     }
+
     private static function carritoObtenerUnidadesProducto($clienteId, $productoId, $pedidoId){
         self::ejecutarConsulta("SELECT unidades, pedido_id FROM linea, pedido WHERE pedido.id=linea.pedido_id AND cliente_id=? AND producto_id=? ", [$clienteId, $productoId]);
     }
+
     private static function carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId){
         $rs = carritoObtenerUnidadesProducto($clienteId, $productoId);
         // $rsPrecio= self::ejecutarConsulta("SELECT precio FROM producto WHERE id=? ", [$productoId]);
@@ -116,6 +113,7 @@ class DAO
         /* else { // Quieren quitar unidades de un prodcuto que no existe, informar al usuario de ello.
          */
     }
+
     public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades) {
         $rs = carritoObtenerUnidadesProducto($clienteId, $productoId);
         $pedidoId=$rs[0]['pedido_id'];
@@ -126,5 +124,4 @@ class DAO
             $nuevaCantidadUnidades = $variacionUnidades + $rs[0]['unidades'];
         }
         self::carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId);
-    }
-}
+    }}
