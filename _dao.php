@@ -72,6 +72,7 @@ class DAO
         // TODO Parece que esto no actúa: hay que mirar qué pasa.
     }
 
+    // Si no existe, se creará.
     public static function carritoObtenerParaCliente(int $id): Carrito
     {
 
