@@ -44,7 +44,7 @@ $productos = DAO::productoObtenerTodos();
     <?php } ?>
 
 </table>
-
+<a href='cliente-detalle.php'>Ver perfil</a>
 <?php require "_info-sesion.php"; ?>
 
 </body>
