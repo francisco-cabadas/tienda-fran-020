@@ -1,7 +1,7 @@
 <?php
 session_start();
 $sesioniniciada= DAO::inicioSesion();
-if($sesioniniciada==false){
+if(!$sesioniniciada){
    // header();
 }else {
 
