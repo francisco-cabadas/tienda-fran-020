@@ -86,10 +86,10 @@ class DAO
     public static function carritoObtenerParaCliente(int $id): Carrito
     {
 
-        $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ", [$id]);
+        $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion IS null ", [$id]);
         if (!$rs) {
             self::carritoCrearParaCliente($id);
-            $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ", [$id]);
+            $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion IS null ", [$id]);
 
         }
 
