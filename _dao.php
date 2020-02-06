@@ -85,19 +85,29 @@ class DAO
     // Si no existe, se creará.
     public static function carritoObtenerParaCliente(int $id): Carrito
     {
+        $arrayLineasParaCarrito = array();
 
-        $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion IS null ", [$id]);
+        $rs = self::ejecutarConsulta("SELECT * FROM linea INNER JOIN pedido ON linea.pedido_id = pedido.id WHERE cliente_id=? AND fechaConfirmacion IS null ", [$id]);
         if (!$rs) {
             self::carritoCrearParaCliente($id);
-            $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion IS null ", [$id]);
+            $rs = self::ejecutarConsulta("SELECT * FROM pedido WHERE cliente_id=? AND fechaConfirmacion IS null", [$id]);
+            $carrito = new Carrito(
+                $rs[0]['id'],
+                null
+            );
 
         }
 
+        foreach ($rs as $fila){
+            $linea= new LineaCarrito(
+                $fila['producto_id'],
+                $fila['unidades']
+            );
+            array_push($arrayLineasParaCarrito, $linea);
+        }
         $carrito = new Carrito (
-            $rs[0]['id'],
             $rs[0]['cliente_id'],
-            $rs[0]['direccionEnvio'],
-            $rs[0]['fechaConfirmacion']
+            $arrayLineasParaCarrito
         );
 
         return $carrito;

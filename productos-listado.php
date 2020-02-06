@@ -9,9 +9,6 @@ garantizarSesion();
 $productos = DAO::productoObtenerTodos();
 
 ?>
-
-
-
 <html>
 
 <head>
@@ -19,7 +16,7 @@ $productos = DAO::productoObtenerTodos();
 </head>
 
 <body>
-
+<a href="carrito-ver.php">Ir al carrito</a>
 <table border="1">
 
     <tr>
@@ -44,7 +41,7 @@ $productos = DAO::productoObtenerTodos();
     <?php } ?>
 
 </table>
-
+<a href="carrito-ver.php">Ir al carrito</a>
 <?php require "_info-sesion.php"; ?>
 
 </body>

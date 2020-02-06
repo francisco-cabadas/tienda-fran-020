@@ -38,10 +38,10 @@ $totalCarrito = 0;
     <tbody>
     <?php
     if ($carrito) {
-        foreach ($carrito->obtenerLineas() as $linea) {
-            $producto = $linea->getProducto();
-            $importeLinea = $linea->getUnidades() * $producto->getPrecioUnitario();
-            $totalCarrito = $totalCarrito + $importeLinea;
+        foreach ($carrito->getLineas() as $linea) {
+            $producto = $linea->getProductoId();
+            $importeLinea = $linea->getUnidades() * $producto->getPrecio();
+            $totalCarrito += $importeLinea;
             ?>
 
             <tr>
