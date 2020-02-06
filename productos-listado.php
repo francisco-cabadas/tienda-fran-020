@@ -1,15 +1,15 @@
 <?php
-session_start();
+
+require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
-$sesioniniciada= DAO::inicioSesion();
-if(!$sesioniniciada){
-     header("location: inicio-sesion.php");
-}else {
+
+garantizarSesion();
+
 $productos = DAO::productoObtenerTodos();
 
 ?>
-<!-- -->
+
 
 
 <html>
@@ -46,11 +46,9 @@ $productos = DAO::productoObtenerTodos();
     ?>
 
 </table>
-<a href="cerrar-sesion.php">cerrar sesion</a>
+
+<?php require "_info-sesion.php"; ?>
 
 </body>
 
 </html>
-    <?php
-}
-?>

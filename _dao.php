@@ -47,6 +47,16 @@ class DAO
         $actualizacion->execute($parametros);
     }
 
+    public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna)
+    {
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
+        if ($rs) {
+            return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+        } else {
+            return null;
+        }
+    }
+
     public static function productoObtenerTodos(): array
     {
         $datos = [];
@@ -128,51 +138,4 @@ class DAO
         self::carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId);
     }
 
-    public static function inicioSesion()
-    {
-        $correcto=false;
-        if (isset($_SESSION['sesionIniciada'])) {
-            $correcto = true;
-
-        } else if (!isset($_SESSION['sesionIniciada']) && isset($_REQUEST['contrasenna']) && isset($_REQUEST['email'])) {
-
-            $rs=self::ejecutarConsulta("select * from cliente where email =? and contrasenna =?",[$_REQUEST['email'], $_REQUEST['contrasenna']]);
-            if ($rs) {
-                $correcto = true;
-
-                $idUsuario = $rs[0]["id"];
-                $_SESSION['sesionIniciada'] = true;
-                $_SESSION["identificador"] = $idUsuario;
-
-                if (isset($_REQUEST["guardar_clave"]) && $_REQUEST["guardar_clave"] == "1") {
-                    mt_srand(time());
-                    $numero_aleatorio = mt_rand(1000000, 999999999);
-                    self::ejecutarConsulta("update cliente set codigoCookie=? where id=?",[$numero_aleatorio, $idUsuario]);
-                    setcookie("CookieId", $idUsuario, time() + (60 * 60 * 24 * 365));
-                    setcookie("CookieNumAleatorio", $numero_aleatorio, time() + (60 * 60 * 24 * 365));
-                }
-            } else {
-                setcookie('incorrecto', true, time() + 60 * 60);
-
-                $correcto = false;
-            }
-        } else if (!isset($_SESSION['sesionIniciada']) && isset($_COOKIE["CookieId"]) && isset($_COOKIE["CookieNumAleatorio"])) {
-            $rs=self::ejecutarConsulta("select * from cliente where id=? and codigoCookie=?",[$_COOKIE["CookieId"], $_COOKIE["CookieNumAleatorio"]]);
-            if ($rs) {
-                $_SESSION['sesionIniciada'] = true;
-                $_SESSION["identificador"] = $_COOKIE["CookieId"];
-                $correcto = true;
-            } else {
-                setcookie("CookieId", 0, time() - 3600);
-                setcookie("CookieNumAleatorio", 0, time() - 3600);
-
-            }
-
-        } else {
-
-            $correcto = false;
-        }
-        return $correcto;
-
-    }
 }

@@ -28,4 +28,7 @@ $producto = DAO::productoObtenerPorId($id);
         <input type="submit" name="Añadir carrito" value="annadir">
     </form>
 </body>
+
+<?php require "_info-sesion.php"; ?>
+
 </html>
