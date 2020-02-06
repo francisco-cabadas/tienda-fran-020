@@ -154,6 +154,15 @@ class Producto extends Dato
         $this->precio = $precio;
     }
 
+    //añadida clase para producto-detalle que actualiza el objeto producto
+    public function actualizarProducto(int $id, string $nombre, string $descripcion, int $precio): void
+    {
+        DAO::productoActualizar($id,$nombre,$descripcion,$precio);
+        $producto = DAO::productoObtenerPorId($id);
+        $producto->setNombre($nombre) ;
+        $producto->setDescripcion ($descripcion);
+        $producto->setPrecio($precio);
+    }
     public function generarPrecioFormateado(): string
     {
         return number_format ($this->getPrecio(), 2) . "€";
