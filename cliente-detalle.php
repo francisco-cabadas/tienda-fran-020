@@ -19,16 +19,13 @@ $cliente = DAO::clienteObtenerPorId($id);
     <title>Document</title>
 </head>
 <body>
-<p>Email<?=$cliente->getEmail()?></p>
-<p>Nombre<?=$cliente->getNombre()?></p>
-<p>Direccion<?=$cliente->getDireccion()?></p>
-<p>Telefono<?=$cliente->getTelefono()?></p>
+<p>Email <?=$cliente->getEmail()?></p>
+<p>Nombre <?=$cliente->getNombre()?></p>
+<p>Direccion <?=$cliente->getDireccion()?></p>
+<p>Telefono <?=$cliente->getTelefono()?></p>
 
 <a href="productos-listado.php">Volver listado</a>
-
-<form action="carrito-gestionar-producto.php?productoId=<?=$cliente->getId()?>&variacionUnidades=1" method="post">
-    <input type="submit" name="Añadir carrito" value="annadir">
-</form>
+<a href="Carrito-ver.php">ver carrito</a>
 </body>
 
 <?php require "_info-sesion.php"; ?>
