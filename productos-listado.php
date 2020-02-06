@@ -38,12 +38,10 @@ $productos = DAO::productoObtenerTodos();
                 <a href='producto-detalle.php?id=<?=$producto->getId()?>'><?=$producto->generarPrecioFormateado()?></a>
             </td>
             <td>
-                <a href='carrito-añadir-producto.php?productoId=<?=$producto->getId()?>'>Al carrito</a>
+                <a href='carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>'>Al carrito</a>
             </td>
         </tr>
-    <?php }
-
-    ?>
+    <?php } ?>
 
 </table>
 

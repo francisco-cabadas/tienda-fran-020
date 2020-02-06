@@ -190,6 +190,16 @@ abstract class ProtoPedido extends Dato
     {
         $this->lineas = $lineas;
     }
+
+    // TODO No hace falta recibir cliente id.
+    public function variarProducto($clienteId, $productoId, $variacionUnidades) {
+        $nuevaCantidadUnidades = DAO::carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades);
+
+        $lineas = $this->getLineas();
+        $lineaNueva= new LineaCarrito($productoId, $nuevaCantidadUnidades);
+        array_push($lineas, $lineaNueva);
+        $this->setLineas($lineas);
+    }
 }
 
 class Carrito extends ProtoPedido {
