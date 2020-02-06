@@ -19,6 +19,89 @@ trait Identificable
     }
 }
 
+class Cliente extends Dato {
+    use Identificable;
+
+    private  $email;
+    private  $contrasenna;
+    private  $codigoCookie;
+    private  $nombre;
+    private  $telefono;
+    private  $direccion;
+
+    public function __construct($id, $email, $contrasenna, $codigoCookie, $nombre, $telefono, $direccion)
+    {
+        $this->setId($id);
+        $this->setEmail($email);
+        $this->setContrasenna($contrasenna);
+        $this->setCodigoCookie($codigoCookie);
+        $this->setNombre($nombre);
+        $this->setTelefono($telefono);
+        $this->setDireccion($direccion);
+
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    public function getContrasenna()
+    {
+        return $this->contrasenna;
+    }
+
+    public function setContrasenna($contrasenna)
+    {
+        $this->contrasenna = $contrasenna;
+    }
+
+    public function getCodigoCookie()
+    {
+        return $this->codigoCookie;
+    }
+
+    public function setCodigoCookie($codigoCookie)
+    {
+        $this->codigoCookie = $codigoCookie;
+    }
+
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
+
+    public function getTelefono()
+    {
+        return $this->telefono;
+    }
+
+    public function setTelefono($telefono)
+    {
+        $this->telefono = $telefono;
+    }
+
+    public function getDireccion()
+    {
+        return $this->direccion;
+    }
+
+    public function setDireccion($direccion)
+    {
+        $this->direccion = $direccion;
+    }
+}
+
 class Producto extends Dato
 {
     use Identificable;
@@ -79,8 +162,8 @@ class Producto extends Dato
 
 abstract class ProtoPedido extends Dato
 {
-    private  $cliente_id;
-    private  $lineas;
+    private $cliente_id;
+    private $lineas;
 
     public function __construct(int $cliente_id, array $lineas)
     {
@@ -106,6 +189,16 @@ abstract class ProtoPedido extends Dato
     public function setLineas(array $lineas): void
     {
         $this->lineas = $lineas;
+    }
+
+    // TODO No hace falta recibir cliente id.
+    public function variarProducto($clienteId, $productoId, $variacionUnidades) {
+        $nuevaCantidadUnidades = DAO::carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades);
+
+        $lineas = $this->getLineas();
+        $lineaNueva= new LineaCarrito($productoId, $nuevaCantidadUnidades);
+        array_push($lineas, $lineaNueva);
+        $this->setLineas($lineas);
     }
 }
 
@@ -212,88 +305,5 @@ class LineaPedido extends ProtoLinea
     public function setPrecioUnitario($precioUnitario)
     {
         $this->precioUnitario = $precioUnitario;
-    }
-}
-
-class Cliente extends Dato {
-    use Identificable;
-
-    private  $email;
-    private  $contrasenna;
-    private  $codigoCookie;
-    private  $nombre;
-    private  $telefono;
-    private  $direccion;
-
-    public function __construct($id, $email, $contrasenna, $codigoCookie, $nombre, $telefono, $direccion)
-    {
-        $this->setId($id);
-        $this->setEmail($email);
-        $this->setContrasenna($contrasenna);
-        $this->setCodigoCookie($codigoCookie);
-        $this->setNombre($nombre);
-        $this->setTelefono($telefono);
-        $this->setDireccion($direccion);
-
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getContrasenna()
-    {
-        return $this->contrasenna;
-    }
-
-    public function setContrasenna($contrasenna)
-    {
-        $this->contrasenna = $contrasenna;
-    }
-
-    public function getCodigoCookie()
-    {
-        return $this->codigoCookie;
-    }
-
-    public function setCodigoCookie($codigoCookie)
-    {
-        $this->codigoCookie = $codigoCookie;
-    }
-
-    public function getNombre()
-    {
-        return $this->nombre;
-    }
-
-    public function setNombre($nombre)
-    {
-        $this->nombre = $nombre;
-    }
-
-    public function getTelefono()
-    {
-        return $this->telefono;
-    }
-
-    public function setTelefono($telefono)
-    {
-        $this->telefono = $telefono;
-    }
-
-    public function getDireccion()
-    {
-        return $this->direccion;
-    }
-
-    public function setDireccion($direccion)
-    {
-        $this->direccion = $direccion;
     }
 }

@@ -47,6 +47,16 @@ class DAO
         $actualizacion->execute($parametros);
     }
 
+    public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna)
+    {
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
+        if ($rs) {
+            return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+        } else {
+            return null;
+        }
+    }
+
     public static function productoObtenerTodos(): array
     {
         $datos = [];
@@ -76,10 +86,10 @@ class DAO
     public static function carritoObtenerParaCliente(int $id): Carrito
     {
 
-        $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ", [$id]);
+        $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion IS null ", [$id]);
         if (!$rs) {
             self::carritoCrearParaCliente($id);
-            $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion=null ", [$id]);
+            $rs = self::ejecutarConsulta("select * from pedido where cliente_id=? AND fechaConfirmacion IS null ", [$id]);
 
         }
 
@@ -95,12 +105,13 @@ class DAO
 
     private static function carritoObtenerUnidadesProducto($clienteId, $productoId, $pedidoId)
     {
-        self::ejecutarConsulta("SELECT unidades, pedido_id FROM linea, pedido WHERE pedido.id=linea.pedido_id AND cliente_id=? AND producto_id=? ", [$clienteId, $productoId]);
+        $rs = self::ejecutarConsulta("SELECT unidades FROM linea, pedido WHERE pedido.id=linea.pedido_id AND cliente_id=? AND producto_id=? ", [$clienteId, $productoId]);
+        return $rs; // TODO Hay que devolver un int con las unidades, no un $rs: ... [0]["unidades"]
     }
 
     private static function carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId)
     {
-        $rs = carritoObtenerUnidadesProducto($clienteId, $productoId);
+        $rs = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
         // $rsPrecio= self::ejecutarConsulta("SELECT precio FROM producto WHERE id=? ", [$productoId]);
         // $precioProducto=$rsPrecio[0]['precio'];
         if (!$rs && $nuevaCantidadUnidades > 1) {
@@ -118,7 +129,7 @@ class DAO
 
     public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades)
     {
-        $rs = carritoObtenerUnidadesProducto($clienteId, $productoId);
+        $rs = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
         $pedidoId = $rs[0]['pedido_id'];
         if (!$rs) {
             $nuevaCantidadUnidades = $variacionUnidades;
@@ -126,6 +137,7 @@ class DAO
             $nuevaCantidadUnidades = $variacionUnidades + $rs[0]['unidades'];
         }
         self::carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId);
+        return $nuevaCantidadUnidades;
     }
 
     public static function inicioSesion()
@@ -175,4 +187,21 @@ class DAO
         return $correcto;
 
     }
+
+    // TODO ¿Es necesario este método?
+    public static function obtenerCantidadTotalProductoEnCarrito($productoId, $clienteId) : int{
+        $rs = self::ejecutarConsulta("select id from pedido where id_cliente=?", [$clienteId]);
+        $pedidoId= $rs['id'];
+
+        $rsUnidadesProductos = self::ejecutarConsulta("select lineaPedido.unidades from lineaPedido where pedido_id=? and producto_id=?",
+                                                        [$pedidoId, $productoId]);
+        if (!$rsUnidadesProductos){
+            return 0;
+        }
+        return $rsUnidadesProductos['unidades'];
+
+    }
+
+
+
 }

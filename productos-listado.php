@@ -1,15 +1,15 @@
 <?php
-session_start();
+
+require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
-$sesioniniciada= DAO::inicioSesion();
-if(!$sesioniniciada){
-     header("location: inicio-sesion.php");
-}else {
+
+garantizarSesion();
+
 $productos = DAO::productoObtenerTodos();
 
 ?>
-<!-- -->
+
 
 
 <html>
@@ -38,19 +38,15 @@ $productos = DAO::productoObtenerTodos();
                 <a href='producto-detalle.php?id=<?=$producto->getId()?>'><?=$producto->generarPrecioFormateado()?></a>
             </td>
             <td>
-                <a href='carrito-añadir-producto.php?productoId=<?=$producto->getId()?>'>Al carrito</a>
+                <a href='carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>'>Al carrito</a>
             </td>
         </tr>
-    <?php }
-
-    ?>
+    <?php } ?>
 
 </table>
-<a href="cerrar-sesion.php">cerrar sesion</a>
+
+<?php require "_info-sesion.php"; ?>
 
 </body>
 
 </html>
-    <?php
-}
-?>
