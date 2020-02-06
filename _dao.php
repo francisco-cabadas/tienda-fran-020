@@ -69,11 +69,14 @@ class DAO
         return $datos;
     }
 
-    public static function productoObtenerPorId(int $id)
-    {
+    public static function productoObtenerPorId(int $id){
         $rs = self::ejecutarConsulta("select * from producto where id=?", [$id]);
         $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
         return $producto;
+    }
+    public static function productoActualizar(int $id,string $nuevoNombre, string $nuevaDescripcion, int $nuevoPrecio){
+        //revisar esta funcion, lo de [id] no me queda claro
+        $rs=self::ejecutarActualizacion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? where id=?", [$nuevoNombre,$nuevaDescripcion,$nuevoPrecio,$id]);
     }
 
     private static function carritoCrearParaCliente(int $id)
