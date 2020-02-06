@@ -42,6 +42,7 @@ $productos = DAO::productoObtenerTodos();
 
 </table>
 <a href="carrito-ver.php">Ir al carrito</a>
+<a href='cliente-detalle.php'>Ver perfil</a>
 <?php require "_info-sesion.php"; ?>
 
 </body>

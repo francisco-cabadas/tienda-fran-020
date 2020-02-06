@@ -8,7 +8,7 @@ class DAO
 {
     private static $pdo = null;
 
-    private function obtenerPdoConexionBD()
+    private static function obtenerPdoConexionBD()
     {
         $servidor = "localhost";
         $identificador = "root";
@@ -210,6 +210,14 @@ class DAO
     }
 
 
+
+    }
+    public static function clienteObtenerPorId(int $id)
+    {
+        $rs = self::ejecutarConsulta("select * from cliente where id=?", [$id]);
+        $cliente = new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["direccion"], $rs[0]["telefono"]);
+        return $cliente;
+    }
 
 
 }

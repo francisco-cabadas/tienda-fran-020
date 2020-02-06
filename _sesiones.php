@@ -2,7 +2,7 @@
 session_start();
 
 require_once "_utilidades.php";
-
+session_start();
 // Comprueba si hay sesión-usuario iniciada en la sesión-RAM.
 function haySesionIniciada()
 {
