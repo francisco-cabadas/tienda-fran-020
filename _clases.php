@@ -79,8 +79,8 @@ class Producto extends Dato
 
 abstract class ProtoPedido extends Dato
 {
-    private int $cliente_id;
-    private array $lineas;
+    private  $cliente_id;
+    private  $lineas;
 
     public function __construct(int $cliente_id, array $lineas)
     {
@@ -120,8 +120,8 @@ class Carrito extends ProtoPedido {
 class Pedido extends ProtoPedido {
     use Identificable;
 
-    private string $direccionEnvio;
-    private object $fechaConfirmacion; // $now = date("Y-m-d H:i:s"); tendriamos en la variable 2020-09-01 11:48 y es compatible con datetime de mysql
+    private  $direccionEnvio;
+    private  $fechaConfirmacion; // $now = date("Y-m-d H:i:s"); tendriamos en la variable 2020-09-01 11:48 y es compatible con datetime de mysql
 
     public function __constructPedido(int $id, int $cliente_id, string $direccionEnvio, object $fechaConfirmacion, array $lineas)
     {
@@ -155,8 +155,8 @@ class Pedido extends ProtoPedido {
 
 abstract class ProtoLinea
 {
-    private int $producto_id;
-    private int $unidades;
+    private  $producto_id;
+    private  $unidades;
 
     public function __construct(int $producto_id, int $unidades)
     {
@@ -195,7 +195,7 @@ class LineaCarrito extends ProtoLinea
 
 class LineaPedido extends ProtoLinea
 {
-    private float $precioUnitario;
+    private  $precioUnitario;
 
     public function __construct(int $producto_id, int $unidades, float $precioUnitario)
     {
@@ -218,12 +218,12 @@ class LineaPedido extends ProtoLinea
 class Cliente extends Dato {
     use Identificable;
 
-    private string $email;
-    private string $contrasenna;
-    private string $codigoCookie;
-    private string $nombre;
-    private string $telefono;
-    private string $direccion;
+    private  $email;
+    private  $contrasenna;
+    private  $codigoCookie;
+    private  $nombre;
+    private  $telefono;
+    private  $direccion;
 
     public function __construct($id, $email, $contrasenna, $codigoCookie, $nombre, $telefono, $direccion)
     {

@@ -1,8 +1,11 @@
 <?php
-
+session_start();
 require_once "_clases.php";
 require_once "_dao.php";
-
+$sesioniniciada= DAO::inicioSesion();
+if(!$sesioniniciada){
+     header("location: inicio-sesion.php");
+}else {
 $productos = DAO::productoObtenerTodos();
 
 ?>
@@ -38,10 +41,16 @@ $productos = DAO::productoObtenerTodos();
                 <a href='carrito-añadir-producto.php?productoId=<?=$producto->getId()?>'>Al carrito</a>
             </td>
         </tr>
-    <?php } ?>
+    <?php }
+
+    ?>
 
 </table>
+<a href="cerrar-sesion.php">cerrar sesion</a>
 
 </body>
 
 </html>
+    <?php
+}
+?>
