@@ -201,7 +201,7 @@ abstract class ProtoPedido extends Dato
     }
      public function addLinea($linea){
         if ($linea instanceof ProtoLinea) {
-            $this->lineas[]=linea;
+            array_push($this->lineas, $linea);
         }
     }
 
