@@ -1,11 +1,17 @@
 <?php
-session_start();
-
 require_once "_utilidades.php";
-session_start();
+
+function sessionStartSiNoLoEsta()
+{
+    if(!isset($_SESSION)) {
+        session_start();
+    }
+}
+
 // Comprueba si hay sesión-usuario iniciada en la sesión-RAM.
 function haySesionIniciada()
 {
+    sessionStartSiNoLoEsta();
     return isset($_SESSION['sesionIniciada']);
 }
 
@@ -21,6 +27,8 @@ function vieneCookieRecuerdame()
 
 function garantizarSesion()
 {
+    sessionStartSiNoLoEsta();
+
     if (haySesionIniciada()) {
         // Si hay cookie de "recuérdame", la renovamos.
         if (isset($_COOKIE["email"])) {
