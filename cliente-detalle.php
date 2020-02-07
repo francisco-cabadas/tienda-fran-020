@@ -2,6 +2,7 @@
 require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
+sessionStartSiNoLoEsta();
 
 $id = $_SESSION["id"];
 
