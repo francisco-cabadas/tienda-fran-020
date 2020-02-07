@@ -217,7 +217,7 @@ abstract class ProtoPedido extends Dato
 
 class Carrito extends ProtoPedido {
 
-    public function __construct($cliente_id, array $lineas)
+    public function __construct(int $cliente_id, array $lineas)
     {
         parent::__construct($cliente_id, $lineas);
     }
@@ -261,14 +261,14 @@ class Pedido extends ProtoPedido {
 
 abstract class ProtoLinea
 {
-    private  $producto_id;
-    private  $unidades;
+    private $producto_id;
+    private $unidades;
 
 
     public function __construct(int $producto_id, int $unidades)
     {
-        $this->$producto_id = $producto_id;
-        $this->$unidades = $unidades;
+        $this->producto_id = $producto_id;
+        $this->unidades = $unidades;
     }
 
 

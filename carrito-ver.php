@@ -43,22 +43,21 @@ $totalCarrito = 0;
         $lineasP[0]=$lineaP;
         $lineasP[1]=$lineaP2;
         $carritoP = new Carrito(1, $lineasP);
-
     if ($carritoP) {
+        foreach ($carritoP->getLineas() as $linea) {
 
-        foreach ($carritoP as $linea) {
-            $producto = DAO::productoObtenerPorId($linea->parent::getProductoId());
-            
-            $importeLinea = $linea->parent::getUnidades() * $producto->getPrecio();
+            $producto = DAO::productoObtenerPorId($linea->getProductoId());
+            $importeLinea = $linea->getUnidades() * $producto->generarPrecioFormateado();
             $totalCarrito += $importeLinea;
             ?>
 
             <tr>
-                <td><a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>
+                <td>
+                    <a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>
                 </td>
-                <td class="text-center"><?= $linea->parent::getUnidades() ?></td>
+                <td class="text-center"><?= $linea->getUnidades(); ?></td>
                 <td class="text-center"><?= $producto->generarPrecioFormateado() ?></td>
-                <td class="text-center"><?= $importeLinea ?></td>
+                <td class="text-center"><?= $importeLinea ?>a</td>
                 <td class="text-center"><a
                             href="carrito-gestionar-producto.php?productoId=<?= $producto->getId() ?>&variacionUnidades=eliminar">X</a>
                 </td>
