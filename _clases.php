@@ -199,7 +199,11 @@ abstract class ProtoPedido extends Dato
     {
         $this->lineas = $lineas;
     }
-
+     public function addLinea($linea){
+        if ($linea instanceof ProtoLinea) {
+            $this->lineas[]=linea;
+        }
+    }
 
     public function variarProducto($productoId, $variacionUnidades) {
         $nuevaCantidadUnidades = DAO::carritoVariarUnidadesProducto($this->getClienteId(),$productoId, $variacionUnidades);
@@ -260,18 +264,21 @@ abstract class ProtoLinea
     private  $producto_id;
     private  $unidades;
 
+
     public function __construct(int $producto_id, int $unidades)
     {
         $this->$producto_id = $producto_id;
         $this->$unidades = $unidades;
     }
 
-    public function getProductoId()
+
+    public function getProductoId() : int
     {
         return $this->producto_id;
     }
 
-    public function setProductoId($producto_id)
+
+    public function setProductoId($producto_id): void
     {
         $this->producto_id = $producto_id;
     }
@@ -281,10 +288,15 @@ abstract class ProtoLinea
         return $this->unidades;
     }
 
-    public function setUnidades($unidades)
+
+    public function setUnidades($unidades): void
     {
         $this->unidades = $unidades;
     }
+
+
+
+
 }
 
 class LineaCarrito extends ProtoLinea

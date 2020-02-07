@@ -36,18 +36,27 @@ $totalCarrito = 0;
     </tr>
     </thead>
     <tbody>
+
     <?php
-    if ($carrito) {
-        foreach ($carrito->getLineas() as $linea) {
-            $producto = $linea->getProductoId();
-            $importeLinea = $linea->getUnidades() * $producto->getPrecio();
+        $lineaP= new LineaCarrito(1,3);
+        $lineaP2= new LineaCarrito(2,7);
+        $lineasP[0]=$lineaP;
+        $lineasP[1]=$lineaP2;
+        $carritoP = new Carrito(1, $lineasP);
+
+    if ($carritoP) {
+
+        foreach ($carritoP as $linea) {
+            $producto = DAO::productoObtenerPorId($linea->parent::getProductoId());
+            
+            $importeLinea = $linea->parent::getUnidades() * $producto->getPrecio();
             $totalCarrito += $importeLinea;
             ?>
 
             <tr>
                 <td><a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>
                 </td>
-                <td class="text-center"><?= $linea->getUnidades() ?></td>
+                <td class="text-center"><?= $linea->parent::getUnidades() ?></td>
                 <td class="text-center"><?= $producto->generarPrecioFormateado() ?></td>
                 <td class="text-center"><?= $importeLinea ?></td>
                 <td class="text-center"><a
