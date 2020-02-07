@@ -5,7 +5,7 @@ require_once "_dao.php";
 
 $id = $_REQUEST["id"];
 
-$producto = DAO::productoObtenerPorId($id);
+$producto = (DAO::productoObtenerPorId($id));
 
 ?>
 
@@ -24,11 +24,19 @@ $producto = DAO::productoObtenerPorId($id);
 
     <a href="productos-listado.php">Volver listado</a>
 
-    <form action="carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>&variacionUnidades=1" method="post">
+    <form action="carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>&varacionUnidades=1" method="post">
         <input type="submit" name="Añadir carrito" value="annadir">
     </form>
+    <?php //If (usuario==admin){?>
+        <form action="producto-detalle-guardar.php">
+            <input type="hidden" value="<?=$id?>" name="productoId">
+            Realizar cambios en el producto:
+            Nuevo nombre:<input type="text" name="nombre">
+            Nueva descripion:<input type="text" name="descripcion">
+            Nuevo precio:<input type="number" name="precio">
+        <!-- TODO Actualizar stock:<input type="number" name="stock"> Sobreescribe la cantidad de stock, sumar y restar stock actual-->
+            <input type="submit">
+        </form>
+    <?php //}?>
 </body>
-
-<?php require "_info-sesion.php"; ?>
-
 </html>
