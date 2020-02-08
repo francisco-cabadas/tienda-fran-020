@@ -154,15 +154,6 @@ class Producto extends Dato
         $this->precio = $precio;
     }
 
-    //añadida clase para producto-detalle que actualiza el objeto producto
-    public function actualizarProducto(int $id, string $nombre, string $descripcion, int $precio): void
-    {
-        DAO::productoActualizar($id,$nombre,$descripcion,$precio);
-        $producto = DAO::productoObtenerPorId($id);
-        $producto->setNombre($nombre) ;
-        $producto->setDescripcion ($descripcion);
-        $producto->setPrecio($precio);
-    }
     public function generarPrecioFormateado(): string
     {
         return number_format ($this->getPrecio(), 2) . "€";
@@ -199,14 +190,10 @@ abstract class ProtoPedido extends Dato
     {
         $this->lineas = $lineas;
     }
-     public function addLinea($linea){
-        if ($linea instanceof ProtoLinea) {
-            array_push($this->lineas, $linea);
-        }
-    }
 
-    public function variarProducto($productoId, $variacionUnidades) {
-        $nuevaCantidadUnidades = DAO::carritoVariarUnidadesProducto($this->getClienteId(),$productoId, $variacionUnidades);
+    // TODO No hace falta recibir cliente id.
+    public function variarProducto($clienteId, $productoId, $variacionUnidades) {
+        $nuevaCantidadUnidades = DAO::carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades);
 
         $lineas = $this->getLineas();
         $lineaNueva= new LineaCarrito($productoId, $nuevaCantidadUnidades);
@@ -217,7 +204,7 @@ abstract class ProtoPedido extends Dato
 
 class Carrito extends ProtoPedido {
 
-    public function __construct(int $cliente_id, array $lineas)
+    public function __construct($cliente_id, array $lineas)
     {
         parent::__construct($cliente_id, $lineas);
     }
@@ -261,24 +248,21 @@ class Pedido extends ProtoPedido {
 
 abstract class ProtoLinea
 {
-    private $producto_id;
-    private $unidades;
-
+    private  $producto_id;
+    private  $unidades;
 
     public function __construct(int $producto_id, int $unidades)
     {
-        $this->producto_id = $producto_id;
-        $this->unidades = $unidades;
+        $this->$producto_id = $producto_id;
+        $this->$unidades = $unidades;
     }
 
-
-    public function getProductoId() : int
+    public function getProductoId()
     {
         return $this->producto_id;
     }
 
-
-    public function setProductoId($producto_id): void
+    public function setProductoId($producto_id)
     {
         $this->producto_id = $producto_id;
     }
@@ -288,15 +272,10 @@ abstract class ProtoLinea
         return $this->unidades;
     }
 
-
-    public function setUnidades($unidades): void
+    public function setUnidades($unidades)
     {
         $this->unidades = $unidades;
     }
-
-
-
-
 }
 
 class LineaCarrito extends ProtoLinea

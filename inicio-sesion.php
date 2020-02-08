@@ -1,6 +1,5 @@
 <?php
-require_once "_sesiones.php";
-
+require_once "_dao.php";
 if (haySesionIniciada()) {
     redireccionar("productos-listado.php");
 }
@@ -31,7 +30,7 @@ if (isset($_REQUEST["sesionCerrada"])) {
     <label><b>Email: </b></label><input name="email" type="email" placeholder="Email"><br />
     <label><b>Contraseña: </b></label><input type="password" name="contrasenna" placeholder="Contraseña"/><br />
     <label><b>Recuérdame</b></label><input type="checkbox" name="recuerdame" /><br />
-    <br/>
+    <br />
     <input type="Submit" value="Iniciar sesión" />
 </form>
 

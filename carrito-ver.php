@@ -36,29 +36,20 @@ $totalCarrito = 0;
     </tr>
     </thead>
     <tbody>
-
     <?php
-       /* $lineaP= new LineaCarrito(1,3);
-        $lineaP2= new LineaCarrito(2,7);
-        $lineasP[0]=$lineaP;
-        $lineasP[1]=$lineaP2;
-        $carritoP = new Carrito(1, $lineasP); */
-
     if ($carrito) {
-        foreach ($carrito->getLineas() as $linea) {
-
-            $producto = DAO::productoObtenerPorId($linea->getProductoId());
-            $importeLinea = $linea->getUnidades() * $producto->getPrecio();
-            $totalCarrito += $importeLinea;
+        foreach ($carrito->obtenerLineas() as $linea) {
+            $producto = $linea->getProducto();
+            $importeLinea = $linea->getUnidades() * $producto->getPrecioUnitario();
+            $totalCarrito = $totalCarrito + $importeLinea;
             ?>
 
             <tr>
-                <td>
-                    <a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>
+                <td><a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>
                 </td>
-                <td class="text-center"><?= $linea->getUnidades(); ?></td>
+                <td class="text-center"><?= $linea->getUnidades() ?></td>
                 <td class="text-center"><?= $producto->generarPrecioFormateado() ?></td>
-                <td class="text-center"><?= $importeLinea ?>€</td>
+                <td class="text-center"><?= $importeLinea ?></td>
                 <td class="text-center"><a
                             href="carrito-gestionar-producto.php?productoId=<?= $producto->getId() ?>&variacionUnidades=eliminar">X</a>
                 </td>
@@ -75,12 +66,9 @@ $totalCarrito = 0;
     </tr>
     </tbody>
 </table>
-<a href="productos-listado.php">Enlace a listado de productos</a>
-<?php require "_info-sesion.php"; ?>
-
 
 </body>
 
-
+<?php require "_info-sesion.php"; ?>
 
 </html>

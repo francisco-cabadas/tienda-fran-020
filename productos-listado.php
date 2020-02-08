@@ -1,14 +1,16 @@
 <?php
-
-require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
+
 
 garantizarSesion();
 
 $productos = DAO::productoObtenerTodos();
 
 ?>
+
+
+
 <html>
 
 <head>
@@ -16,7 +18,7 @@ $productos = DAO::productoObtenerTodos();
 </head>
 
 <body>
-<a href="carrito-ver.php">Ir al carrito</a>
+
 <table border="1">
 
     <tr>
@@ -41,8 +43,7 @@ $productos = DAO::productoObtenerTodos();
     <?php } ?>
 
 </table>
-<a href="carrito-ver.php">Ir al carrito</a>
-<a href='cliente-detalle.php'>Ver perfil</a>
+
 <?php require "_info-sesion.php"; ?>
 
 </body>
