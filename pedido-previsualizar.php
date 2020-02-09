@@ -1,7 +1,5 @@
 <?php
 
-// TODO Redirige a iniciar sesión y no sabemos por qué.
-
 require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
@@ -42,12 +40,6 @@ if ($cliente->getDireccion() != null){
     <tbody>
 
     <?php
-    /* $lineaP= new LineaCarrito(1,3);
-     $lineaP2= new LineaCarrito(2,7);
-     $lineasP[0]=$lineaP;
-     $lineasP[1]=$lineaP2;
-     $carritoP = new Carrito(1, $lineasP); */
-
     if ($carrito) {
         foreach ($carrito->getLineas() as $linea) {
 
