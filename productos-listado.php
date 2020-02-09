@@ -22,7 +22,7 @@ $productos = DAO::productoObtenerTodos();
     <tr>
         <th>Producto</th>
         <th>Precio</th>
-        <th>Añadir</th>
+        <th></th>
     </tr>
 
     <?php foreach ($productos as $producto) { ?>
@@ -35,7 +35,7 @@ $productos = DAO::productoObtenerTodos();
                 <a href='producto-detalle.php?id=<?=$producto->getId()?>'><?=$producto->generarPrecioFormateado()?></a>
             </td>
             <td>
-                <a href='carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>'>Al carrito</a>
+                <a href='carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>&agregar=true'>Comprar</a>
             </td>
         </tr>
     <?php } ?>
