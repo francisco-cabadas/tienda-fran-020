@@ -2,16 +2,41 @@
 require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
+require_once "_sesiones.php";
+require_once "_utilidades.php";
 garantizarSesion();
 
+if (isset($_REQUEST['agregar'])){
+    $carrito = DAO::carritoObtenerParaCliente($_SESSION["id"]);
+    foreach ($carrito->getLineas() as $linea){
+        if ($linea->getProductoId() == $_REQUEST['productoId']){
+            DAO::carritoEstablecerUnidadesProducto(
+                intval($_REQUEST['productoId']),
+                $linea->getUnidades() + 1,
+                $carrito->getId()
+            );
+            redireccionar("productos-listado.php");
+        }
+    }
+    DAO::carritoAgregarProducto($_SESSION["id"],$_REQUEST['productoId']);
+    redireccionar("productos-listado.php");
+}
 
-$clienteId = 1; //$_SESSION["id"]; // Lo dejamos en 1 considerando que es el usuario "jlopez"
-$productoId = $_REQUEST["productoId"];
-$variacionUnidades = $_REQUEST["variacionUnidades"];
+if (isset($_REQUEST['eliminar'])){
+    $pedidoId = DAO::pedidoObtenerId($_SESSION["id"]);
+    DAO::lineaEliminar($pedidoId,$_REQUEST['productoId']);
+    redireccionar("carrito-ver.php");
+}
 
-$carrito = DAO::carritoObtenerParaCliente($clienteId);
+if (isset($_REQUEST['cambiarCantidad'])){
+    $pedidoId = DAO::pedidoObtenerId($_SESSION["id"]);
+    DAO::carritoEstablecerUnidadesProducto(
+        intval($_REQUEST['productoId']),
+        intval($_REQUEST['unidades']),
+        $pedidoId
+    );
+    redireccionar("carrito-ver.php");
+}
 
-$carrito->variarProducto($productoId, $variacionUnidades);
-redireccionar("productos-listado.php?agregado");
 
 ?>

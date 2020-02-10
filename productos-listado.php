@@ -28,7 +28,7 @@ echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
     <tr>
         <th>Producto</th>
         <th>Precio</th>
-        <th>Añadir</th>
+        <th></th>
     </tr>
 
     <?php foreach ($productos as $producto) { ?>
@@ -41,7 +41,7 @@ echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
                 <a href='producto-detalle.php?id=<?=$producto->getId()?>'><?=$producto->generarPrecioFormateado()?></a>
             </td>
             <td>
-                <a href='carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>&variacionUnidades=1'>Al carrito</a>
+                <a href='carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>&agregar=true'>Comprar</a>
             </td>
         </tr>
     <?php } ?>
