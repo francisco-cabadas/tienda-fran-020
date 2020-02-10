@@ -143,20 +143,20 @@ class DAO
         $unidadesIniciales = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
         $unidadesDefinitivas=$unidadesIniciales+$nuevaCantidadUnidades;
 
-        // TODO Hay que quitar los echo-s de aquí.
+        
         if (!$unidadesIniciales && $nuevaCantidadUnidades >= 1) {
-            echo("i");
+
             self::ejecutarConsulta("INSERT INTO linea (pedido_Id, producto_id, unidades, precioUnitario) VALUES (?, ?, ?, NULL )", [$pedidoId, $productoId, $unidadesDefinitivas]);
             // PrecioUnitario en vez de null-> $precioProducto*$nuevaCantidadUnidades
         } else if ($unidadesIniciales > 0 && $nuevaCantidadUnidades >= 1) {
-            echo("u");
+
             self::ejecutarConsulta("UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?", [$unidadesDefinitivas, $pedidoId, $productoId]);
             // Habria que añadir al set el PrecioUnitario ($precioProducto * $nuevaCantidadUnidades)
         } else if ($unidadesIniciales>0 && $nuevaCantidadUnidades < 0) {
-            echo("d");
+
             self::ejecutarConsulta("DELETE FROM linea WHERE pedido_id=? AND producto_id=?", [$pedidoId, $productoId]);
         } else { // Quieren quitar unidades de un prodcuto que no existe, informar al usuario de ello.
-            echo("?");
+
         }
 
     }
