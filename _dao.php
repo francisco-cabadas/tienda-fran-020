@@ -87,12 +87,7 @@ class DAO
 
     /* PRODUCTO */
     public static function agregarProducto($nombre,$desc,$precio){
-        $rs = self::ejecutarConsulta("INSERT INTO producto ( NULL, ?, ?, ?)", [$nombre,$desc,$precio]);
-
-        $rs = self::ejecutarConsulta("SELECT * FROM producto where nombre = ?, descripcion = ?, precio = ?", [$nombre,$desc,$precio ]);
-        foreach ($rs as $fila) {
-            $producto = new producto($fila["id"], $fila["nombre"], $fila["descripcion"], $fila["precio"]);
-        }
+        $rs = self::ejecutarAccion("INSERT INTO producto (id, nombre, descripcion, precio) VALUES ( NULL, ?, ?, ?)", [$nombre,$desc,$precio]);
     }
     public static function productoObtenerTodos(): array
     {
