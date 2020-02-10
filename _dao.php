@@ -1,6 +1,5 @@
 <?php
-session_start();
-// Prueba Alain
+sessionStartSiNoLoEsta();
 
 require_once "_clases.php";
 
