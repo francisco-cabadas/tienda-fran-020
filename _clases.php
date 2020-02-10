@@ -254,8 +254,8 @@ abstract class ProtoLinea
 
     public function __construct(int $producto_id, int $unidades)
     {
-        $this->$producto_id = $producto_id;
-        $this->$unidades = $unidades;
+        $this->producto_id = $producto_id;
+        $this->unidades = $unidades;
     }
 
     public function getProductoId()

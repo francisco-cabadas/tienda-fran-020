@@ -23,13 +23,13 @@ if (isset($_REQUEST['agregar'])){
 }
 
 if (isset($_REQUEST['eliminar'])){
-    $pedidoId = DAO::pedidoObtenerId($_SESSION["id"]);
+    $pedidoId = DAO::carritoObtenerPedidoIdPorCliente($_SESSION["id"]);
     DAO::lineaEliminar($pedidoId,$_REQUEST['productoId']);
     redireccionar("carrito-ver.php");
 }
 
 if (isset($_REQUEST['cambiarCantidad'])){
-    $pedidoId = DAO::pedidoObtenerId($_SESSION["id"]);
+    $pedidoId = DAO::carritoObtenerPedidoIdPorCliente($_SESSION["id"]);
     DAO::carritoEstablecerUnidadesProducto(
         intval($_REQUEST['productoId']),
         intval($_REQUEST['unidades']),

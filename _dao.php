@@ -6,9 +6,9 @@ sessionStartSiNoLoEsta();
 
 class DAO
 {
-     static $pdo = null;
+    private static $pdo = null;
 
-     static function obtenerPdoConexionBD()
+    private static function obtenerPdoConexionBD()
     {
         $servidor = "localhost";
         $identificador = "root";
@@ -57,7 +57,6 @@ class DAO
 
     private static function crearClienteDesdeRs(array $rs): Cliente
     {
-    {
         return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["direccion"], $rs[0]["telefono"]);
     }
 
@@ -67,19 +66,6 @@ class DAO
         return self::crearClienteDesdeRs($rs);
     }
 
-    public static function clienteObtenerPorId(int $id): Cliente
-    {
-        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE id=?", [$id]);
-        return self::crearClienteDesdeRs($rs);
-    }
-
-    public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna): Cliente
-    {
-        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
-        // TODO Crear este cliente mediante el método self::crearClienteDesdeRs($rs);, como los otros obtener que hay arriba.
-        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
-    }
- 
     public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna): Cliente
     {
         $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
@@ -105,7 +91,7 @@ class DAO
     public static function productoObtenerTodos(): array
     {
         $datos = [];
-        $rs = self::ejecutarConsulta("Select * from producto order by nombre", []);
+        $rs = self::ejecutarConsulta("SELECT * FROM producto ORDER BY nombre", []);
 
         foreach ($rs as $fila) {
             $producto = new Producto($fila["id"], $fila["nombre"], $fila["descripcion"], $fila["precio"]);
@@ -116,7 +102,7 @@ class DAO
 
     public static function productoObtenerPorId(int $id)
     {
-        $rs = self::ejecutarConsulta("select * from producto where id=?", [$id]);
+        $rs = self::ejecutarConsulta("SELECT * FROM producto WHERE id=?", [$id]);
         $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
         return $producto;
     }
@@ -124,8 +110,7 @@ class DAO
     public static function productoActualizar(int $id, string $nuevoNombre, string $nuevaDescripcion, int $nuevoPrecio)
     {
         // TODO revisar esta funcion, lo de [id] no me queda claro
-        $rs = self::ejecutarAccion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
-            [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
+        self::ejecutarAccion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?", [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
     }
 
 
@@ -137,26 +122,36 @@ class DAO
         self::ejecutarAccion("INSERT INTO pedido (cliente_id) VALUES (?) ", [$id]);
     }
 
+    private static function carritoObtenerPedidoIdDelCarritoParaCliente(int $clienteId)
+    {
+        $rsPedidoId = self::ejecutarConsulta(
+            "SELECT id FROM pedido WHERE cliente_id=? AND fechaConfirmacion IS NULL",
+            [$clienteId]
+        );
+        $pedidoID = $rsPedidoId[0]["id"];
+        return $pedidoID;
+    }
+
     public static function carritoObtenerParaCliente(int $clienteId): Carrito
     {
-        $arrayLineasParaCarrito = array();
-        $pedidoId = self::pedidoObtenerId($clienteId);
+        $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
 
         if (!$pedidoId) {
             self::carritoCrearParaCliente($clienteId);
-            $pedidoId = self::pedidoObtenerId($clienteId);
+            $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
             return new Carrito(
                 $clienteId,
-                $arrayLineasParaCarrito
+                []
             );
         }
 
         $rsLineas = self::ejecutarConsulta("SELECT * FROM linea WHERE pedido_id=?", [$pedidoId]);
 
+        $arrayLineasParaCarrito = [];
         foreach ($rsLineas as $fila) {
             $linea = new LineaCarrito(
-                $fila['producto_id'],
-                $fila['unidades']
+                (int) $fila['producto_id'],
+                (int) $fila['unidades']
             );
             array_push($arrayLineasParaCarrito, $linea);
         }
@@ -181,7 +176,6 @@ class DAO
 
     public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad, $pedidoId): void
     {
-
         $udsIniciales = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
         if ($udsIniciales <= 0) {
             self::ejecutarAccion(
@@ -191,8 +185,8 @@ class DAO
             exit();
         }
 
-        if ($nuevaCantidad<=>0){
-
+        if ($nuevaCantidad<=>0) {
+            // TODO: aquí falta algo...
         }
 
         self::ejecutarAccion(
@@ -219,7 +213,7 @@ class DAO
 
     public static function carritoAgregarProducto(int $clienteId, $productoId)
     {
-        $pedidoId = self::pedidoObtenerId($clienteId);
+        $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
 
         self::ejecutarAccion(
             "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,1)",
@@ -245,17 +239,9 @@ class DAO
         );
     }
 
-    /* PEDIDO */
 
-    public static function pedidoObtenerId(int $clienteId)
-    {
-        $rsPedidoId = self::ejecutarConsulta(
-            "SELECT id FROM pedido WHERE cliente_id=? AND fechaConfirmacion IS NULL",
-            [$clienteId]
-        );
-        $pedidoID = $rsPedidoId[0]["id"];
-        return $pedidoID;
-    }
+
+    /* PEDIDO */
 
     public static function pedidoConfirmar(int $pedidoId)
     {
@@ -275,8 +261,6 @@ class DAO
             self::lineaFijarPrecio($linea->getProductoId(), $pedidoId);
         }
     }
-
-
 
     public static function pedidosObtenerTodosPorCliente($clienteId): array
     {
