@@ -1,11 +1,16 @@
-<?php
-require_once "_clases.php";
-require_once "_dao.php";
-$nombre = $_REQUEST["nombre"];
-$descripcion = $_REQUEST["descripcion"];
-$precio = $_REQUEST["precio"];
-$producto = new producto( NULL,$nombre, $descripcion, $precio);
-echo("<p>se ha creado un producto
-        </p><br><a href='productos-listado.php'>volver a la lista</a>");
-?>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="producto-annadir-ejecutar.php">
+    Añadir un nuevo producto:
+    Nombre:<input type="text" name="nombre">
+    Descripion:<input type="text" name="descripcion">
+    Precio:<input type="number" name="precio">
+    <input type="submit">
+    </form>
+</body>
+</html>
