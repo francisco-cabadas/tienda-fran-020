@@ -58,7 +58,7 @@ $totalCarrito = 0;
             <form action="carrito-gestionar-producto.php" method="post">
               <input type="hidden" name="cambiarCantidad" value="true">
               <input type="hidden" name="productoId" value="<?= $producto->getId() ?>">
-              <input type="number" name="unidades" id="unidades" value="<?= $linea->getUnidades(); ?>">
+              <input type="number" min="0" name="unidades" id="unidades" value="<?= $linea->getUnidades(); ?>">
               <input type="submit" value="Actualizar">
             </form>
           </td>
