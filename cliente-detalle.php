@@ -26,7 +26,7 @@ $cliente = DAO::clienteObtenerPorId($id);
 <p>Telefono <?=$cliente->getTelefono()?></p>
 
 <a href="productos-listado.php">Volver listado</a>
-<a href="Carrito-ver.php">ver carrito</a>
+<a href="carrito-ver.php">ver carrito</a>
 </body>
 
 <?php require "_info-sesion.php"; ?>
