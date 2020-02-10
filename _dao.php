@@ -112,17 +112,23 @@ class DAO
 
     private static function carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId)
     {
-        $rs = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
-        // $rsPrecio= self::ejecutarConsulta("SELECT precio FROM producto WHERE id=? ", [$productoId]);
-        // $precioProducto=$rsPrecio[0]['precio'];
-        if (!$rs && $nuevaCantidadUnidades > 1) {
-            self::ejecutarConsulta("INSERT INTO linea (pedidoId, producto_id, unidades, precioUnitario) VALUES (?, ?, ?, NULL )", [$pedidoId, $productoId, $nuevaCantidadUnidades]);
+        $unidadesIniciales = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
+        $unidadesDefinitivas=$unidadesIniciales+$nuevaCantidadUnidades;
+
+        
+        if (!$unidadesIniciales && $nuevaCantidadUnidades >= 1) {
+
+            self::ejecutarConsulta("INSERT INTO linea (pedido_Id, producto_id, unidades, precioUnitario) VALUES (?, ?, ?, NULL )", [$pedidoId, $productoId, $unidadesDefinitivas]);
             // PrecioUnitario en vez de null-> $precioProducto*$nuevaCantidadUnidades
-        } else if ($rs && $nuevaCantidadUnidades > 1) {
-            self::ejecutarConsulta("UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?", [$nuevaCantidadUnidades, $pedidoId, $productoId]);
+        } else if ($unidadesIniciales > 0 && $nuevaCantidadUnidades >= 1) {
+
+            self::ejecutarConsulta("UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?", [$unidadesDefinitivas, $pedidoId, $productoId]);
             // Habria que añadir al set el PrecioUnitario ($precioProducto * $nuevaCantidadUnidades)
-        } else if ($rs && $nuevaCantidadUnidades <= 0) {
+        } else if ($unidadesIniciales>0 && $nuevaCantidadUnidades < 0) {
+
             self::ejecutarConsulta("DELETE FROM linea WHERE pedido_id=? AND producto_id=?", [$pedidoId, $productoId]);
+        } else { // Quieren quitar unidades de un prodcuto que no existe, informar al usuario de ello.
+
         }
         /* else { // Quieren quitar unidades de un prodcuto que no existe, informar al usuario de ello.
          */

@@ -24,7 +24,8 @@ $producto = DAO::productoObtenerPorId($id);
 
     <a href="productos-listado.php">Volver listado</a>
 
-    <form action="carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>&variacionUnidades=1" method="post">
+    <form action="carrito-gestionar-producto.php?productoId=<?=$producto->getId()?>" method="post">
+        <input type="number" min="1" value="1" name="variacionUnidades">
         <input type="submit" name="Añadir carrito" value="annadir">
     </form>
 </body>

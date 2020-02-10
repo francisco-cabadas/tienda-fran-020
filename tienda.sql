@@ -6,6 +6,9 @@
 -- Tiempo de generación: 27-01-2020 a las 14:08:33
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.3.11
+DROP DATABASE IF EXISTS tienda;
+CREATE DATABASE tienda;
+USE tienda;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
