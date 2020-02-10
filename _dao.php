@@ -175,4 +175,10 @@ class DAO
         self::carritoEstablecerUnidadesProducto($clienteId, $productoId, $nuevaCantidadUnidades, $pedidoId);
         return $nuevaCantidadUnidades;
     }
+
+
+    public static function pedidosObtenerTodosPorCliente($clienteId): array
+    {
+        
+    }
 }
