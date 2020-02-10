@@ -179,6 +179,14 @@ class DAO
 
     public static function pedidosObtenerTodosPorCliente($clienteId): array
     {
-        
+        $rsPedidos= self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=?", [$clienteId]);
+        return $rsPedidos;
+
+    }
+
+    public static function pedidoObtenerProductos($pedidoId): array
+    {
+        $rs= self::ejecutarConsulta("SELECT linea.pedido_id, producto.nombre, linea.unidades, producto.precio FROM pedido, linea, producto WHERE pedido.id=linea.pedido_id AND producto.id=linea.producto_id AND pedido.id=?", [$pedidoId]);
+        return $rs;
     }
 }
