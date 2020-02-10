@@ -57,7 +57,8 @@ class DAO
 
     private static function crearClienteDesdeRs(array $rs): Cliente
     {
-        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["direccion"], $rs[0]["telefono"]);
+        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"],
+            $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
     }
 
     public static function clienteObtenerPorId(int $id): Cliente
@@ -68,7 +69,8 @@ class DAO
 
     public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna): Cliente
     {
-        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?",
+            [$email, $contrasenna]);
         if ($rs) {
             return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
         } else {
@@ -109,8 +111,9 @@ class DAO
 
     public static function productoActualizar(int $id, string $nuevoNombre, string $nuevaDescripcion, int $nuevoPrecio)
     {
-        // TODO revisar esta funcion, lo de [id] no me queda claro
-        self::ejecutarAccion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?", [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
+        //revisar esta funcion, lo de [id] no me queda claro
+        $rs = self::ejecutarAccion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
+            [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
     }
 
 
@@ -193,7 +196,6 @@ class DAO
             "UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?",
             [$nuevaCantidad, $pedidoId, $productoId]
         );
-
     }
 
     public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades)

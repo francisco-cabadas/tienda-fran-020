@@ -20,6 +20,7 @@ $productos = DAO::productoObtenerTodos();
 <body>
 <h1>Listado de productos</h1>
 <?php
+// TODO ¿Se utiliza esto de "agregado"?
 if (isset($_REQUEST["agregado"])) {
 echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
 }
@@ -49,6 +50,10 @@ echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
     <?php } ?>
 
 </table>
+
+<a href="carrito-ver.php">Ir al carrito</a>
+<a href='cliente-detalle.php'>Ver perfil</a>
+<a href='producto-annadir.html'>Añadir producto</a>
 
 <?php require "_info-sesion.php"; ?>
 

@@ -50,6 +50,10 @@ $totalCarrito = 0;
           $totalCarrito += $importeLinea;
           ?>
 
+            $producto = DAO::productoObtenerPorId($linea->getProductoId());
+            $importeLinea = $linea->getUnidades() * $producto->getPrecio();
+            $totalCarrito = $totalCarrito + $importeLinea;
+            ?>
         <tr>
           <td>
             <a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>

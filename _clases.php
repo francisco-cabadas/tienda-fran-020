@@ -115,7 +115,7 @@ class Producto extends Dato
         if        ($id != null && $nombre == null) { // Cargar de BD
             // TODO obtener info de la BD usando el id.
         } else if ($id == null && $nombre != null) { // Crear en BD
-            // TODO crear el dato en la BD y meterle el id al objeto
+           DAO::agregarProducto($nombre,$descripcion,$precio);
         } else { // No hacemos nada con la BD (debe venir todo relleno)
             $this->id = $id;
             $this->nombre = $nombre;
