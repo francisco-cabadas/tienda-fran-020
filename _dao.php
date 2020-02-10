@@ -6,9 +6,9 @@ sessionStartSiNoLoEsta();
 
 class DAO
 {
-    private static $pdo = null;
+     static $pdo = null;
 
-    private static function obtenerPdoConexionBD()
+     static function obtenerPdoConexionBD()
     {
         $servidor = "localhost";
         $identificador = "root";
@@ -51,12 +51,20 @@ class DAO
         $actualizacion->execute($parametros);
     }
 
+
+
     /* CLIENTE */
 
     private static function crearClienteDesdeRs(array $rs): Cliente
     {
-        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"],
-            $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+    {
+        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["direccion"], $rs[0]["telefono"]);
+    }
+
+    public static function clienteObtenerPorId(int $id): Cliente
+    {
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE id=?", [$id]);
+        return self::crearClienteDesdeRs($rs);
     }
 
     public static function clienteObtenerPorId(int $id): Cliente
@@ -67,10 +75,16 @@ class DAO
 
     public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna): Cliente
     {
-        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?",
-            [$email, $contrasenna]);
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
+        // TODO Crear este cliente mediante el método self::crearClienteDesdeRs($rs);, como los otros obtener que hay arriba.
+        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+    }
+ 
+    public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna): Cliente
+    {
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?", [$email, $contrasenna]);
         if ($rs) {
-            return self::crearClienteDesdeRs($rs);
+            return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
         } else {
             return null;
         }
@@ -84,33 +98,37 @@ class DAO
         );
     }
 
+    
+    
     /* PRODUCTO */
-
+    
     public static function productoObtenerTodos(): array
     {
         $datos = [];
-        $rs = self::ejecutarConsulta("SELECT * FROM producto ORDER BY nombre", []);
+        $rs = self::ejecutarConsulta("Select * from producto order by nombre", []);
 
         foreach ($rs as $fila) {
-            $producto = new producto($fila["id"], $fila["nombre"], $fila["descripcion"], $fila["precio"]);
+            $producto = new Producto($fila["id"], $fila["nombre"], $fila["descripcion"], $fila["precio"]);
             array_push($datos, $producto);
         }
         return $datos;
     }
 
-    public static function productoObtenerPorId(int $id): Producto
+    public static function productoObtenerPorId(int $id)
     {
-        $rs = self::ejecutarConsulta("SELECT * FROM producto WHERE id=?", [$id]);
+        $rs = self::ejecutarConsulta("select * from producto where id=?", [$id]);
         $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
         return $producto;
     }
 
     public static function productoActualizar(int $id, string $nuevoNombre, string $nuevaDescripcion, int $nuevoPrecio)
     {
-        //revisar esta funcion, lo de [id] no me queda claro
+        // TODO revisar esta funcion, lo de [id] no me queda claro
         $rs = self::ejecutarAccion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
             [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
     }
+
+
 
     /* CARRITO */
 
@@ -184,7 +202,7 @@ class DAO
 
     }
 
-    public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades): int
+    public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades)
     {
         $rs = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
         $rsPedido = self::ejecutarConsulta("SELECT id FROM pedido WHERE cliente_id=? ", [$clienteId]);

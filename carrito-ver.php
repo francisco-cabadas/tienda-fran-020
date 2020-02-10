@@ -87,8 +87,8 @@ if ($carrito->getLineas() != null){ ?>
 <a href="productos-listado.php">Seguir Comprando</a>
 <?php require "_info-sesion.php"; ?>
 
-
 </body>
 
+<?php require "_info-sesion.php"; ?>
 
 </html>

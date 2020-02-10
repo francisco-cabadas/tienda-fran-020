@@ -1,14 +1,16 @@
 <?php
-
-require_once "_sesiones.php";
 require_once "_clases.php";
 require_once "_dao.php";
+
 
 garantizarSesion();
 
 $productos = DAO::productoObtenerTodos();
 
 ?>
+
+
+
 <html>
 
 <head>
@@ -47,8 +49,7 @@ echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
     <?php } ?>
 
 </table>
-<a href="carrito-ver.php">Ir al carrito</a>
-<a href='cliente-detalle.php'>Ver perfil</a>
+
 <?php require "_info-sesion.php"; ?>
 
 </body>
