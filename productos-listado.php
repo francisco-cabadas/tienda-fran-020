@@ -16,6 +16,12 @@ $productos = DAO::productoObtenerTodos();
 </head>
 
 <body>
+<h1>Listado de productos</h1>
+<?php
+if(isset($_REQUEST["agregado"])){
+echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
+}
+?>
 <a href="carrito-ver.php">Ir al carrito</a>
 <table border="1">
 
