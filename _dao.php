@@ -1,7 +1,8 @@
 <?php
+require_once "_clases.php";
+require_once "_sesiones.php";
 sessionStartSiNoLoEsta();
 
-require_once "_clases.php";
 
 class DAO
 {
@@ -9,9 +10,9 @@ class DAO
 
     private static function obtenerPdoConexionBD()
     {
-        $servidor = "localhost";
+        $servidor = "mysql";
         $identificador = "root";
-        $contrasenna = "";
+        $contrasenna = "root";
         $bd = "tienda"; // Schema
         $opciones = [
             PDO::ATTR_EMULATE_PREPARES => false, // Modo emulación desactivado para prepared statements "reales"
@@ -127,9 +128,8 @@ class DAO
             self::carritoCrearParaCliente($clienteId);
             $pedidoId = self::pedidoObtenerId($clienteId);
             return new Carrito(
-                $pedidoId,
                 $clienteId,
-                null
+                $arrayLineasParaCarrito
             );
         }
 
@@ -143,7 +143,6 @@ class DAO
             array_push($arrayLineasParaCarrito, $linea);
         }
         $carrito = new Carrito (
-            $pedidoId,
             $clienteId,
             $arrayLineasParaCarrito
         );
@@ -200,8 +199,10 @@ class DAO
         return $nuevaCantidadUnidades;
     }
 
-    public static function carritoAgregarProducto(int $pedidoId, $productoId)
+    public static function carritoAgregarProducto(int $clienteId, $productoId)
     {
+        $pedidoId = self::pedidoObtenerId($clienteId);
+
         self::ejecutarAccion(
             "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,1)",
             [$pedidoId,$productoId]

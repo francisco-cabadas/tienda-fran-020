@@ -17,7 +17,7 @@ if (isset($_REQUEST['agregar'])){
             redireccionar("productos-listado.php");
         }
     }
-    DAO::carritoAgregarProducto($carrito->getId(),$_REQUEST['productoId']);
+    DAO::carritoAgregarProducto($_SESSION["id"],$_REQUEST['productoId']);
     redireccionar("productos-listado.php");
 }
 

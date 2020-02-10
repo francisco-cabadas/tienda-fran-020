@@ -175,7 +175,7 @@ abstract class ProtoPedido extends Dato
     protected $cliente_id;
     protected $lineas;
 
-    public function __construct(int $cliente_id, array $lineas)
+    public function __construct(int $cliente_id, $lineas)
     {
         $this->cliente_id = $cliente_id;
         $this->lineas = $lineas;
@@ -218,7 +218,7 @@ abstract class ProtoPedido extends Dato
 
 class Carrito extends ProtoPedido {
 
-    public function __construct(int $cliente_id, array $lineas)
+    public function __construct(int $cliente_id, $lineas)
     {
         parent::__construct($cliente_id, $lineas);
     }
