@@ -128,7 +128,7 @@ class DAO
         return $carrito;
     }
 
-    private static function carritoObtenerId(int $clienteId): int
+    public static function carritoObtenerId(int $clienteId): int
     {
         $rsPedidoId = self::ejecutarConsulta(
             "SELECT id FROM pedido WHERE cliente_id=? AND fechaConfirmacion IS NULL",
