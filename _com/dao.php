@@ -40,7 +40,7 @@ class DAO
         return $select->fetchAll();
     }
 
-    private static function ejecutarActualización(string $sql, array $parametros): void
+    private static function ejecutarActualizacion(string $sql, array $parametros): void
     {
         if (!isset(self::$pdo)) {
             self::$pdo = self::obtenerPdoConexionBd();
@@ -121,12 +121,14 @@ class DAO
 
     /* CARRITO */
 
-    private static function carritoCrearParaCliente(int $id): void
+    public static function carritoCrearParaCliente(int $clienteId): Carrito
     {
-        self::ejecutarActualizacion("INSERT INTO pedido (cliente_id) VALUES (?) ", [$id]);
+        self::ejecutarActualizacion("INSERT INTO pedido (cliente_id) VALUES (?) ", [$clienteId]);
+        $carrito= new Carrito($clienteId, []);
+        return $carrito;
     }
 
-    private static function carritoObtenerPedidoIdDelCarritoParaCliente(int $clienteId)
+    private static function carritoObtenerId(int $clienteId): int
     {
         $rsPedidoId = self::ejecutarConsulta(
             "SELECT id FROM pedido WHERE cliente_id=? AND fechaConfirmacion IS NULL",
@@ -136,7 +138,30 @@ class DAO
         return $pedidoID;
     }
 
-    public static function carritoObtenerParaCliente(int $clienteId): Carrito
+    // Si no existe, se creará.
+    public static function carritoObtenerParaCliente(int $clienteId)
+    {
+        $arrayLineasParaCarrito = array();
+
+        $rs = self::ejecutarConsulta("SELECT * FROM linea INNER JOIN pedido ON linea.pedido_id = pedido.id WHERE cliente_id=? AND fechaConfirmacion IS null", [$clienteId]);
+        if (!$rs) {
+            return null;
+        }
+        foreach ($rs as $fila){
+            $linea= new LineaCarrito(
+                $fila['producto_id'],
+                $fila['unidades']
+            );
+            array_push($arrayLineasParaCarrito, $linea);
+        }
+        $carrito = new Carrito (
+            $rs[0]['cliente_id'],
+            $arrayLineasParaCarrito
+        );
+
+        return $carrito;
+    }
+/*    public static function carritoObtenerParaCliente(int $clienteId): Carrito
     {
         $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
 
@@ -165,7 +190,7 @@ class DAO
 
         return $carrito;
     }
-
+*/
     private static function carritoObtenerUnidadesProducto($pedidoId, $productoId): int
     {
         $rs = self::ejecutarConsulta("SELECT unidades FROM linea WHERE pedido_id=? AND producto_id=? ",
@@ -176,51 +201,54 @@ class DAO
             return $rs[0]['unidades'];
         }
     }
-//TODO REVISAR
-    public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad): void
+//TODO REVISAR, CREO QUE IRÍA BIEN ASI
+    public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad, $pedidoId): void
     {
-        $carrito=self::carritoObtenerParaCliente($_SESSION["id"]);//Esto va mal ahora, revisar
-        $udsIniciales = self::carritoObtenerUnidadesProducto($productoId);
+        $udsIniciales = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
         if ($udsIniciales <= 0) {
             self::ejecutarActualizacion(
                 "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,?)",
                 [$pedidoId, $productoId, $nuevaCantidad]
             );
-            exit();//????
         }
-
-        if ($nuevaCantidad<=>0) {
-            // TODO: aquí falta algo...
+        else if ($nuevaCantidad<=0){
+            self::lineaEliminar($pedidoId, $productoId);
         }
-
-        self::ejecutarActualizacion(
-            "UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?",
-            [$nuevaCantidad, $pedidoId, $productoId]
-        );
+        else {
+            self::ejecutarActualizacion(
+                "UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?",
+                [$nuevaCantidad, $pedidoId, $productoId]
+            );
+        }
     }
 
-    public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades)
+    public static function carritoVariarUnidadesProducto($clienteId, $productoId, $variacionUnidades): int
     {
-        $rs = self::carritoObtenerUnidadesProducto($clienteId, $productoId);
-        $rsPedido = self::ejecutarConsulta("SELECT id FROM pedido WHERE cliente_id=? ", [$clienteId]);
+        $rsPedido = self::ejecutarConsulta("SELECT id FROM pedido WHERE cliente_id=? AND fechaConfirmacion IS null", [$clienteId]);
         $pedidoId = $rsPedido[0]['id'];
-        if (!$rs) {
+        $unidades = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
+        if ($unidades==0) {
             $nuevaCantidadUnidades = $variacionUnidades;
         } else {
-            $nuevaCantidadUnidades = $variacionUnidades + $rs[0]['unidades'];
+            $nuevaCantidadUnidades = $variacionUnidades + $unidades;
         }
-
-        self::carritoEstablecerUnidadesProducto($productoId, $nuevaCantidadUnidades, $pedidoId);
-        return $nuevaCantidadUnidades;
+        if ($variacionUnidades==0){
+            self::carritoEstablecerUnidadesProducto($productoId, $variacionUnidades, $pedidoId);
+            return $variacionUnidades;
+        }
+        else {
+            self::carritoEstablecerUnidadesProducto($productoId, $nuevaCantidadUnidades, $pedidoId);
+            return $nuevaCantidadUnidades;
+        }
     }
 
-    public static function carritoAgregarProducto(int $clienteId, $productoId)
+    public static function carritoAgregarProducto(int $clienteId, $productoId, $unidades): void
     {
-        $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
+        $pedidoId = self::carritoObtenerId($clienteId);
 
         self::ejecutarActualizacion(
-            "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,1)",
-            [$pedidoId,$productoId]
+            "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,?) ",
+            [$pedidoId,$productoId, $unidades]
         );
     }
 

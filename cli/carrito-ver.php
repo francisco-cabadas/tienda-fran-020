@@ -46,8 +46,8 @@ $totalCarrito = 0;
             <form action="carrito-gestionar-producto.php" method="post">
               <input type="hidden" name="cambiarCantidad" value="true">
               <input type="hidden" name="productoId" value="<?= $producto->getId() ?>">
-              <input type="number" min="0" name="unidades" id="unidades" value="<?= $linea->getUnidades(); ?>">
-              <input type="submit" value="Actualizar">
+              <input type="number" name="unidades" id="unidades" value="<?= $linea->getUnidades(); ?>">
+              <input type="submit" value="Operar">
             </form>
           </td>
           <td class="text-center"><?= $producto->generarPrecioFormateado() ?></td>
@@ -69,9 +69,11 @@ $totalCarrito = 0;
   </tbody>
 </table>
 <?php
-if ($carrito->getLineas() != null){ ?>
-  <a href="pedido-previsualizar.php">Confirmar Pedido</a>
-<?php } ?>
+if($carrito) {
+    if ($carrito->getLineas() != null) { ?>
+        <a href="pedido-previsualizar.php">Confirmar Pedido</a>
+    <?php }
+}?>
 <a href="productos-listado.php">Seguir Comprando</a>
 <?php require "../_com/info-sesion.php"; ?>
 
