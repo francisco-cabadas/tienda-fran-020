@@ -7,7 +7,6 @@ $totalCarrito = 0;
 
 ?>
 
-
 <html>
 
 <head>
@@ -32,24 +31,13 @@ $totalCarrito = 0;
   <tbody>
 
   <?php
-  // TODO hacer algo con estas líneas comentadas.
-  /* $lineaP= new LineaCarrito(1,3);
-   $lineaP2= new LineaCarrito(2,7);
-   $lineasP[0]=$lineaP;
-   $lineasP[1]=$lineaP2;
-   $carritoP = new Carrito(1, $lineasP); */
 
-  if ($carrito->getLineas() != null) {
+  if ($carrito) {
       foreach ($carrito->getLineas() as $linea) {
           $producto = DAO::productoObtenerPorId($linea->getProductoId());
           $importeLinea = $linea->getUnidades() * $producto->getPrecio();
           $totalCarrito += $importeLinea;
           ?>
-
-            $producto = DAO::productoObtenerPorId($linea->getProductoId());
-            $importeLinea = $linea->getUnidades() * $producto->getPrecio();
-            $totalCarrito = $totalCarrito + $importeLinea;
-            ?>
         <tr>
           <td>
             <a href='producto-detalle.php?id=<?= $producto->getId() ?>'><?= $producto->getNombre() ?></a>

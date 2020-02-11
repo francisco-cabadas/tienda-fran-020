@@ -148,7 +148,6 @@ class DAO
                 []
             );
         }
-
         $rsLineas = self::ejecutarConsulta("SELECT * FROM linea WHERE pedido_id=?", [$pedidoId]);
 
         $arrayLineasParaCarrito = [];
@@ -177,16 +176,17 @@ class DAO
             return $rs[0]['unidades'];
         }
     }
-
-    public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad, $pedidoId): void
+//TODO REVISAR
+    public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad): void
     {
-        $udsIniciales = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
+        $carrito=self::carritoObtenerParaCliente($_SESSION["id"]);//Esto va mal ahora, revisar
+        $udsIniciales = self::carritoObtenerUnidadesProducto($productoId);
         if ($udsIniciales <= 0) {
             self::ejecutarActualizacion(
                 "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,?)",
                 [$pedidoId, $productoId, $nuevaCantidad]
             );
-            exit();
+            exit();//????
         }
 
         if ($nuevaCantidad<=>0) {
@@ -223,6 +223,8 @@ class DAO
             [$pedidoId,$productoId]
         );
     }
+
+
 
     /* LINEA */
 
