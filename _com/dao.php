@@ -40,7 +40,7 @@ class DAO
         return $select->fetchAll();
     }
 
-    private static function ejecutarAccion(string $sql, array $parametros): void
+    private static function ejecutarActualización(string $sql, array $parametros): void
     {
         if (!isset(self::$pdo)) {
             self::$pdo = self::obtenerPdoConexionBd();
@@ -79,17 +79,17 @@ class DAO
 
     public static function clienteActualizarDireccion($direccion): void
     {
-        self::ejecutarAccion(
+        self::ejecutarActualizacion(
             "UPDATE cliente SET direccion=? WHERE id=?",
             [$direccion, $_SESSION["id"]]
         );
     }
 
-    
-    
+
+
     /* PRODUCTO */
     public static function agregarProducto($nombre,$descripcion,$precio){
-        $rs = self::ejecutarAccion("INSERT INTO producto (id, nombre, descripcion, precio) VALUES (NULL, ?, ?, ?);", [$nombre,$descripcion,$precio]);
+        $rs = self::ejecutarActualizacion("INSERT INTO producto (id, nombre, descripcion, precio) VALUES (NULL, ?, ?, ?);", [$nombre,$descripcion,$precio]);
     }
     public static function productoObtenerTodos(): array
     {
@@ -113,7 +113,7 @@ class DAO
     public static function productoActualizar(int $id, string $nuevoNombre, string $nuevaDescripcion, int $nuevoPrecio)
     {
         //revisar esta funcion, lo de [id] no me queda claro
-        $rs = self::ejecutarAccion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
+        $rs = self::ejecutarActualizacion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
             [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
     }
 
@@ -123,7 +123,7 @@ class DAO
 
     private static function carritoCrearParaCliente(int $id): void
     {
-        self::ejecutarAccion("INSERT INTO pedido (cliente_id) VALUES (?) ", [$id]);
+        self::ejecutarActualizacion("INSERT INTO pedido (cliente_id) VALUES (?) ", [$id]);
     }
 
     private static function carritoObtenerPedidoIdDelCarritoParaCliente(int $clienteId)
@@ -182,7 +182,7 @@ class DAO
     {
         $udsIniciales = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
         if ($udsIniciales <= 0) {
-            self::ejecutarAccion(
+            self::ejecutarActualizacion(
                 "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,?)",
                 [$pedidoId, $productoId, $nuevaCantidad]
             );
@@ -193,7 +193,7 @@ class DAO
             // TODO: aquí falta algo...
         }
 
-        self::ejecutarAccion(
+        self::ejecutarActualizacion(
             "UPDATE linea SET unidades=? WHERE pedido_id=? AND producto_id=?",
             [$nuevaCantidad, $pedidoId, $productoId]
         );
@@ -218,7 +218,7 @@ class DAO
     {
         $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
 
-        self::ejecutarAccion(
+        self::ejecutarActualizacion(
             "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,1)",
             [$pedidoId,$productoId]
         );
@@ -228,7 +228,7 @@ class DAO
 
     public static function lineaEliminar($pedidoId, $productoId)
     {
-        self::ejecutarAccion(
+        self::ejecutarActualizacion(
             "DELETE from linea WHERE pedido_id=? AND producto_id=?",
             [$pedidoId, $productoId]);
     }
@@ -236,7 +236,7 @@ class DAO
     private static function lineaFijarPrecio($productoId, $pedidoId)
     {
         $precio = self::productoObtenerPorId($productoId)->getPrecio();
-        self::ejecutarAccion(
+        self::ejecutarActualizacion(
             "UPDATE linea SET precioUnitario=? WHERE producto_id=? AND pedido_id=?",
             [$precio, $productoId, $pedidoId]
         );
@@ -251,7 +251,7 @@ class DAO
         $direccion = DAO::clienteObtenerPorId($_SESSION["id"])->getDireccion();
         $fechaAhora = obtenerFecha();
         self::pedidoFijarPrecios($pedidoId);
-        self::ejecutarAccion(
+        self::ejecutarActualizacion(
             "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
             [$fechaAhora, $direccion, $pedidoId]
         );
