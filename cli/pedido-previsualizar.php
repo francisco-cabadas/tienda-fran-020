@@ -1,15 +1,12 @@
 <?php
 
-require_once "_sesiones.php";
-require_once "_clases.php";
-require_once "_dao.php";
-
-garantizarSesion();
+require_once "../_com/comunes-app.php";
 
 $carrito = DAO::carritoObtenerParaCliente($_SESSION["id"]);
 $totalCarrito = 0;
 $cliente = DAO::clienteObtenerPorId($_SESSION["id"]);
 $direccion = "";
+
 if ($cliente->getDireccion() != null){
     $direccion = $cliente->getDireccion();
 }
@@ -78,7 +75,7 @@ if ($cliente->getDireccion() != null){
 </form>
 <a href="pedido-crear.php?confirmado=true">Finalizar Compra</a>
 <a href="productos-listado.php">Seguir Comprando</a>
-<?php require "_info-sesion.php"; ?>
+<?php require "../_com/info-sesion.php"; ?>
 
 
 </body>

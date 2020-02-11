@@ -1,4 +1,11 @@
-<?php ?>
+<?php
+
+require_once "../_com/comunes-app.php";
+
+?>
+
+
+
 <!doctype html>
 <html lang="en">
 <head>

@@ -1,10 +1,6 @@
 <?php
 
-require_once "_sesiones.php";
-require_once "_clases.php";
-require_once "_dao.php";
-
-garantizarSesion();
+require_once "../_com/comunes-app.php";
 
 $carrito = DAO::carritoObtenerParaCliente($_SESSION["id"]);
 $totalCarrito = 0;
@@ -89,7 +85,7 @@ if ($carrito->getLineas() != null){ ?>
   <a href="pedido-previsualizar.php">Confirmar Pedido</a>
 <?php } ?>
 <a href="productos-listado.php">Seguir Comprando</a>
-<?php require "_info-sesion.php"; ?>
+<?php require "../_com/info-sesion.php"; ?>
 
 </body>
 

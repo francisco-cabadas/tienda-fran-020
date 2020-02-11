@@ -1,9 +1,6 @@
 <?php
-require_once "_clases.php";
-require_once "_dao.php";
 
-
-garantizarSesion();
+require_once "../_com/comunes-app.php";
 
 $productos = DAO::productoObtenerTodos();
 
@@ -22,7 +19,7 @@ $productos = DAO::productoObtenerTodos();
 <?php
 // TODO ¿Se utiliza esto de "agregado"?
 if (isset($_REQUEST["agregado"])) {
-echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
+    echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
 }
 ?>
 
@@ -38,7 +35,6 @@ echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
         <tr>
             <td>
                 <a href='producto-detalle.php?id=<?=$producto->getId()?>'><?=$producto->getNombre()?></a>
-
             </td>
             <td>
                 <a href='producto-detalle.php?id=<?=$producto->getId()?>'><?=$producto->generarPrecioFormateado()?></a>
@@ -52,10 +48,9 @@ echo "<p style='color: green'>Producto agregado con exito al carrito</p>";
 </table>
 
 <a href="carrito-ver.php">Ir al carrito</a>
-<a href='cliente-detalle.php'>Ver perfil</a>
-<a href='producto-annadir.php'>Añadir producto</a>
+<a href='../adm/producto-annadir.php'>Añadir producto</a>
 
-<?php require "_info-sesion.php"; ?>
+<?php require "../_com/info-sesion.php"; ?>
 
 </body>
 

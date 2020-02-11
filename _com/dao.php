@@ -1,8 +1,7 @@
 <?php
-require_once "_clases.php";
-require_once "_sesiones.php";
-sessionStartSiNoLoEsta();
 
+require_once "clases.php";
+require_once "utilidades.php";
 
 class DAO
 {

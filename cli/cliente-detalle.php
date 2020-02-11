@@ -1,14 +1,14 @@
 <?php
-require_once "_sesiones.php";
-require_once "_clases.php";
-require_once "_dao.php";
-sessionStartSiNoLoEsta();
+
+require_once "../_com/comunes-app.php";
 
 $id = $_SESSION["id"];
 
 $cliente = DAO::clienteObtenerPorId($id);
 
 ?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -30,6 +30,6 @@ $cliente = DAO::clienteObtenerPorId($id);
 <a href="carrito-ver.php">ver carrito</a>
 </body>
 
-<?php require "_info-sesion.php"; ?>
+<?php require "../_com/info-sesion.php"; ?>
 
 </html>

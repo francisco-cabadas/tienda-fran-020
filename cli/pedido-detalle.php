@@ -1,10 +1,6 @@
 <?php
 
-require_once "_sesiones.php";
-require_once "_clases.php";
-require_once "_dao.php";
-
-garantizarSesion();
+require_once "../_com/comunes-app.php";
 
 $clienteId = $_SESSION["id"];
 $pedidoId = $_REQUEST["id"];
@@ -13,6 +9,9 @@ $productos = DAO::pedidoObtenerProductos($pedidoId);
 
 $precioTotal = 0;
 ?>
+
+
+
 <html>
 
 <head>
@@ -53,7 +52,7 @@ $precioTotal = 0;
 </table>
 <a href="carrito-ver.php">Ir al carrito</a>
 <a href="productos-listado.php">Ir al listado de productos</a>
-<?php require "_info-sesion.php"; ?>
+<?php require "../_com/info-sesion.php"; ?>
 
 </body>
 

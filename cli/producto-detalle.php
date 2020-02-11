@@ -1,13 +1,14 @@
 <?php
 
-require_once "_clases.php";
-require_once "_dao.php";
+require_once "../_com/comunes-app.php";
 
 $id = $_REQUEST["id"];
 
 $producto = DAO::productoObtenerPorId($id);
 
 ?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -30,6 +31,6 @@ $producto = DAO::productoObtenerPorId($id);
     </form>
 </body>
 
-<?php require "_info-sesion.php"; ?>
+<?php require "../_com/info-sesion.php"; ?>
 
 </html>

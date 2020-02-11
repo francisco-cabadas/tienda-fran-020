@@ -1,5 +1,9 @@
 <?php
-session_start();
+
+require_once "../_com/comunes-app.php";
+
+// TODO Poner función destruirSesion() en sesiones.php y llamarle desde aquí.
+
 session_destroy();
 unset($_SESSION['sesionIniciada']);
 unset($_SESSION['tipoUsuario']);

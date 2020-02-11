@@ -1,8 +1,11 @@
 <?php
-require_once "_dao.php";
+
+require_once "../_com/comunes-app.php";
+
 if (haySesionIniciada()) {
     redireccionar("productos-listado.php");
 }
+
 ?>
 
 
