@@ -89,7 +89,9 @@ class DAO
     
     
     /* PRODUCTO */
-    
+    public static function agregarProducto($nombre,$descripcion,$precio){
+        $rs = self::ejecutarAccion("INSERT INTO producto (id, nombre, descripcion, precio) VALUES (NULL, ?, ?, ?);", [$nombre,$descripcion,$precio]);
+    }
     public static function productoObtenerTodos(): array
     {
         $datos = [];
