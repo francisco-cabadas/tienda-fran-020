@@ -17,8 +17,11 @@ require_once "../_com/comunes-app.php";
     Añadir un nuevo producto:
     Nombre:<input type="text" name="nombre">
     Descripion:<input type="text" name="descripcion">
-    Precio:<input type="number" name="precio">
+    Precio:<input type="number" step="any" name="precio">
     <input type="submit">
     </form>
+<a href="../cli/productos-listado.php">Volver a listado</a>
+
+
 </body>
 </html>
