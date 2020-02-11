@@ -26,11 +26,12 @@ $precioTotal = 0;
     <tr>
         <th>Nombre del producto</th>
         <th>Unidades</th>
-        <th>Precio</th>
+        <th>Precio Unitario</th>
+        <th>Precio Total Producto</th>
     </tr>
 
     <?php foreach ($productos as $producto) {
-        $precioTotal += $producto["precio"];
+        $precioTotal += $producto["precio"]*$producto["unidades"];
         ?>
         <tr>
             <td>
@@ -42,10 +43,14 @@ $precioTotal = 0;
             <td>
                 <p><?=$producto["precio"]?></p>
             </td>
+            <td>
+                <p><?=$producto["precio"]*$producto["unidades"]?></p>
+            </td>
         </tr>
     <?php } ?>
     <tr style="font-weight: bold">
-        <td>Precio Total</td>
+        <td>Precio Total Pedido</td>
+        <td></td>
         <td></td>
         <td><p><?=$precioTotal?></p></td>
     </tr>
