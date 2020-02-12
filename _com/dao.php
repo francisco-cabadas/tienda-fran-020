@@ -276,15 +276,26 @@ class DAO
 
     /* PEDIDO */
 
-    public static function pedidoConfirmar(int $pedidoId)
+    public static function pedidoConfirmar(int $pedidoId, $nuevaDireccion)
     {
-        $direccion = DAO::clienteObtenerPorId($_SESSION["id"])->getDireccion();
-        $fechaAhora = obtenerFecha();
-        self::pedidoFijarPrecios($pedidoId);
-        self::ejecutarActualizacion(
-            "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
-            [$fechaAhora, $direccion, $pedidoId]
-        );
+        if( !isset($nuevaDireccion)){
+            $direccion = DAO::clienteObtenerPorId($_SESSION["id"])->getDireccion();
+            $fechaAhora = obtenerFecha();
+            self::pedidoFijarPrecios($pedidoId);
+            self::ejecutarActualizacion(
+                "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
+                [$fechaAhora, $direccion, $pedidoId]
+            );
+        }else{
+            $direccion = $nuevaDireccion;
+            $fechaAhora = obtenerFecha();
+            self::pedidoFijarPrecios($pedidoId);
+            self::ejecutarActualizacion(
+                "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
+                [$fechaAhora, $direccion, $pedidoId]
+            );
+    }
+
     }
 
     private static function pedidoFijarPrecios(int $pedidoId)

@@ -68,13 +68,28 @@ if ($cliente->getDireccion() != null){
     </tbody>
 </table>
 <h3>Dirección de envío</h3>
+
+<p>Tu dirección predeterminada es: <?= $direccion?></p>
+
 <form action="cliente-detalle-guardar.php" method="get">
-    <input type="hidden" name="actualizarDireccion" value="true">
-    <input type="text" name="direccion" value="<?= $direccion?>" required>
-    <input type="submit" value="Actualizar">
+    <!--<input type="hidden" name="actualizarDireccion" value="true">-->
+    <input type="text" name="direccion"  placeholder="Inserte otra dirección de envío" style="WIDTH: 200px">
+    <br>
+    <input type="checkbox" name="sobreescribirDireccion">
+    <label for "sobreescribirDireccion">Usar esta dirección como predeterminada</label>
+    <br>
+    <br>
+    <input type="submit" name="confirmarPedido" value="Confirmar pedido">
+
 </form>
-<a href="pedido-crear.php?confirmado=true">Finalizar Compra</a>
+
+<!--<button><a href="pedido-crear.php?confirmado=true">Finalizar Compra</a></button>-->
+
+<br>
+<br>
+
 <a href="productos-listado.php">Seguir Comprando</a>
+
 <?php require "../_com/info-sesion.php"; ?>
 
 
