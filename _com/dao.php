@@ -77,6 +77,17 @@ class DAO
         }
     }
 
+    public static function clienteGuardarCodigoCookie(string $email, string $codigoCookie)
+    {
+        if ($codigoCookie != null)
+        {
+            self::ejecutarActualizacion("UPDATE cliente SET codigoCookie=? WHERE email=?", [$codigoCookie, $email]);
+        } else {
+            self::ejecutarActualizacion("UPDATE cliente SET codigoCookie=NULL WHERE email=?", [$email]);
+        }
+
+    }
+
     public static function clienteActualizarDireccion($direccion): void
     {
         self::ejecutarActualizacion(
@@ -304,7 +315,7 @@ class DAO
 
     public static function pedidoObtenerProductos($pedidoId): array
     {
-        $rs= self::ejecutarConsulta("SELECT linea.pedido_id, producto.nombre, linea.unidades, producto.precio FROM pedido, linea, producto WHERE pedido.id=linea.pedido_id AND producto.id=linea.producto_id AND pedido.id=?", [$pedidoId]);
+        $rs = self::ejecutarConsulta("SELECT linea.pedido_id, producto.nombre, linea.unidades, producto.precio FROM pedido, linea, producto WHERE pedido.id=linea.pedido_id AND producto.id=linea.producto_id AND pedido.id=?", [$pedidoId]);
         return $rs;
     }
 }

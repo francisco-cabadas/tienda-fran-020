@@ -28,6 +28,7 @@ function vieneCookieRecuerdame()
     return isset($_COOKIE["identificador"]);
 }
 
+// TODO No funciona bien el "recuérdame": hay una cookie (USAR Edit This Cookie para verla y tal) pero no me la canjean por una sesión abierta, ni me la borran.
 function garantizarSesion()
 {
     sessionStartSiNoLoEsta();
@@ -95,32 +96,19 @@ function generarCadenaAleatoria()
 
 function generarCookieRecuerdame($email)
 {
-    // Creamos un código cookie muy complejo (pero no necesariamente único).
-    $codigoCookie = generarCadenaAleatoria(); // Random...
+    // Creamos un código cookie muy complejo (no necesariamente único).
+    $codigoCookie = generarCadenaAleatoria(32); // Random...
+    DAO::clienteGuardarCodigoCookie($email, $codigoCookie);
 
-    // TODO convertir a nuevo modelo DAO...
-
-    // Anotamos el código cookie en nuestra BD.
-    $pdo = conectarBd();
-    $sql = "UPDATE usuario SET codigoCookie=? WHERE identificador=?";
-    $sentencia = $pdo->prepare($sql);
-    $sentencia->execute([$codigoCookie, $email]);
-
-    // Para una seguridad óptima convendriá anotar en la BD la fecha
-    // de caducidad de la cookie y no aceptar ninguna cookie pasada dicha fecha.
+    // TODO Para una seguridad óptima convendriá anotar en la BD la fecha de caducidad de la cookie y no aceptar ninguna cookie pasada dicha fecha.
 
     establecerCookieRecuerdame($email, $codigoCookie);
 }
 
-function borrarCookieRecuerdame($identificador)
+function borrarCookieRecuerdame($email)
 {
-    // TODO convertir a nuevo modelo DAO...
-
     // Eliminamos el código cookie de nuestra BD.
-    $pdo = conectarBd();
-    $sql = "UPDATE usuario SET codigoCookie=NULL WHERE identificador=?";
-    $sentencia = $pdo->prepare($sql);
-    $sentencia->execute([$identificador]);
+    DAO::clienteGuardarCodigoCookie($email, null);
 
     setcookie("email", "", time() - 3600); // Tiempo en el pasado, para (pedir) borrar la cookie.
     setcookie("codigoCookie", "", time() - 3600); // Tiempo en el pasado, para (pedir) borrar la cookie.
