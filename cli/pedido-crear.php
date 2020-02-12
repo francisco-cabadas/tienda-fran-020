@@ -2,8 +2,13 @@
 
 require_once "../_com/comunes-app.php";
 
-if (isset($_REQUEST['confirmado'])){
+if (isset($_REQUEST['confirmado']) && $_REQUEST['direccion']==""){
     $pedidoId = DAO::carritoObtenerId($_SESSION["id"]);
-    DAO::pedidoConfirmar($pedidoId);
-    redireccionar("pedido-finalizado.php");
+    $cliente= DAO::clienteObtenerPorId($_SESSION["id"]);
+    DAO::pedidoConfirmar($pedidoId, $cliente->getDireccion());
+    redireccionar("pedido-finalizado.php?1=1");
+}else{
+    $pedidoId = DAO::carritoObtenerId($_SESSION["id"]);
+    DAO::pedidoConfirmar($pedidoId, $_REQUEST['direccion']);
+    redireccionar("pedido-finalizado.php?1=2&2=".$_REQUEST['direccion']);
 }
