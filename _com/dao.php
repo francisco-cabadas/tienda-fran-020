@@ -99,9 +99,14 @@ class DAO
 
 
     /* PRODUCTO */
-    public static function agregarProducto($nombre,$descripcion,$precio){
-        $rs = self::ejecutarActualizacion("INSERT INTO producto (id, nombre, descripcion, precio) VALUES (NULL, ?, ?, ?);", [$nombre,$descripcion,$precio]);
+
+    public static function productoObtenerPorId(int $id)
+    {
+        $rs = self::ejecutarConsulta("SELECT * FROM producto WHERE id=?", [$id]);
+        $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
+        return $producto;
     }
+
     public static function productoObtenerTodos(): array
     {
         $datos = [];
@@ -114,17 +119,15 @@ class DAO
         return $datos;
     }
 
-    public static function productoObtenerPorId(int $id)
-    {
-        $rs = self::ejecutarConsulta("SELECT * FROM producto WHERE id=?", [$id]);
-        $producto = new Producto($rs[0]["id"], $rs[0]["nombre"], $rs[0]["descripcion"], $rs[0]["precio"]);
-        return $producto;
+    public static function agregarProducto($nombre, $descripcion, $precio){
+        self::ejecutarActualizacion("INSERT INTO producto (id, nombre, descripcion, precio) VALUES (NULL, ?, ?, ?);",
+            [$nombre, $descripcion, $precio]);
     }
 
     public static function productoActualizar(int $id, string $nuevoNombre, string $nuevaDescripcion, int $nuevoPrecio)
     {
         //revisar esta funcion, lo de [id] no me queda claro
-        $rs = self::ejecutarActualizacion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
+        self::ejecutarActualizacion("UPDATE producto SET nombre = ?, descripcion = ?, precio =? WHERE id=?",
             [$nuevoNombre, $nuevaDescripcion, $nuevoPrecio, $id]);
     }
 
@@ -135,7 +138,7 @@ class DAO
     public static function carritoCrearParaCliente(int $clienteId): Carrito
     {
         self::ejecutarActualizacion("INSERT INTO pedido (cliente_id) VALUES (?) ", [$clienteId]);
-        $carrito= new Carrito($clienteId, []);
+        $carrito = new Carrito($clienteId, []);
         return $carrito;
     }
 
@@ -172,36 +175,18 @@ class DAO
 
         return $carrito;
     }
-/*    public static function carritoObtenerParaCliente(int $clienteId): Carrito
+
+    //TODO Revisar, creo que iría bien asi.
+    public static function carritoAgregarProducto(int $clienteId, $productoId, $unidades): void
     {
-        $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
+        $pedidoId = self::carritoObtenerId($clienteId);
 
-        if (!$pedidoId) {
-            self::carritoCrearParaCliente($clienteId);
-            $pedidoId = self::carritoObtenerPedidoIdDelCarritoParaCliente($clienteId);
-            return new Carrito(
-                $clienteId,
-                []
-            );
-        }
-        $rsLineas = self::ejecutarConsulta("SELECT * FROM linea WHERE pedido_id=?", [$pedidoId]);
-
-        $arrayLineasParaCarrito = [];
-        foreach ($rsLineas as $fila) {
-            $linea = new LineaCarrito(
-                (int) $fila['producto_id'],
-                (int) $fila['unidades']
-            );
-            array_push($arrayLineasParaCarrito, $linea);
-        }
-        $carrito = new Carrito (
-            $clienteId,
-            $arrayLineasParaCarrito
+        self::ejecutarActualizacion(
+            "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,?) ",
+            [$pedidoId, $productoId, $unidades]
         );
-
-        return $carrito;
     }
-*/
+
     private static function carritoObtenerUnidadesProducto($pedidoId, $productoId): int
     {
         $rs = self::ejecutarConsulta("SELECT unidades FROM linea WHERE pedido_id=? AND producto_id=? ",
@@ -212,7 +197,7 @@ class DAO
             return $rs[0]['unidades'];
         }
     }
-//TODO REVISAR, CREO QUE IRÍA BIEN ASI
+
     public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad, $pedidoId): void
     {
         $udsIniciales = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
@@ -253,26 +238,9 @@ class DAO
         }
     }
 
-    public static function carritoAgregarProducto(int $clienteId, $productoId, $unidades): void
-    {
-        $pedidoId = self::carritoObtenerId($clienteId);
-
-        self::ejecutarActualizacion(
-            "INSERT INTO linea (pedido_id, producto_id, unidades) VALUES (?,?,?) ",
-            [$pedidoId,$productoId, $unidades]
-        );
-    }
-
 
 
     /* LINEA */
-
-    public static function lineaEliminar($pedidoId, $productoId)
-    {
-        self::ejecutarActualizacion(
-            "DELETE from linea WHERE pedido_id=? AND producto_id=?",
-            [$pedidoId, $productoId]);
-    }
 
     private static function lineaFijarPrecio($productoId, $pedidoId)
     {
@@ -283,30 +251,28 @@ class DAO
         );
     }
 
+    public static function lineaEliminar($pedidoId, $productoId)
+    {
+        self::ejecutarActualizacion(
+            "DELETE from linea WHERE pedido_id=? AND producto_id=?",
+            [$pedidoId, $productoId]);
+    }
+
 
 
     /* PEDIDO */
 
-    public static function pedidoConfirmar(int $pedidoId, $nuevaDireccion)
+    public static function pedidosObtenerTodosPorCliente($clienteId): array
     {
-        if( !isset($nuevaDireccion)){
-            $direccion = DAO::clienteObtenerPorId($_SESSION["id"])->getDireccion();
-            $fechaAhora = obtenerFecha();
-            self::pedidoFijarPrecios($pedidoId);
-            self::ejecutarActualizacion(
-                "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
-                [$fechaAhora, $direccion, $pedidoId]
-            );
-        }else{
-            $direccion = $nuevaDireccion;
-            $fechaAhora = obtenerFecha();
-            self::pedidoFijarPrecios($pedidoId);
-            self::ejecutarActualizacion(
-                "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
-                [$fechaAhora, $direccion, $pedidoId]
-            );
+        $rsPedidos = self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion, pedido.codigo_pedido FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=? AND pedido.fechaConfirmacion IS NOT NULL", [$clienteId]);
+        return $rsPedidos;
+
     }
 
+    public static function pedidoObtenerProductos($pedidoId): array
+    {
+        $rs = self::ejecutarConsulta("SELECT linea.pedido_id, producto.nombre, linea.unidades, producto.precio FROM pedido, linea, producto WHERE pedido.id=linea.pedido_id AND producto.id=linea.producto_id AND pedido.id=?", [$pedidoId]);
+        return $rs;
     }
 
     private static function pedidoFijarPrecios(int $pedidoId)
@@ -317,16 +283,19 @@ class DAO
         }
     }
 
-    public static function pedidosObtenerTodosPorCliente($clienteId): array
+    public static function pedidoConfirmar(int $pedidoId, $direccionEspecificada)
     {
-        $rsPedidos= self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion, pedido.codigo_pedido FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=? AND pedido.fechaConfirmacion IS NOT NULL", [$clienteId]);
-        return $rsPedidos;
+        if (isset($direccionEspecificada)) { // Si nos han indicado una dirección, la usamos para el pedido.
+            $direccionParaEstePedido = $direccionEspecificada;
+        } else { // Si no, la obtenemos del perfil del cliente.
+            $direccionParaEstePedido = DAO::clienteObtenerPorId($_SESSION["id"])->getDireccion();
+        }
 
-    }
-
-    public static function pedidoObtenerProductos($pedidoId): array
-    {
-        $rs = self::ejecutarConsulta("SELECT linea.pedido_id, producto.nombre, linea.unidades, producto.precio FROM pedido, linea, producto WHERE pedido.id=linea.pedido_id AND producto.id=linea.producto_id AND pedido.id=?", [$pedidoId]);
-        return $rs;
+        $fechaAhora = obtenerFecha();
+        self::pedidoFijarPrecios($pedidoId);
+        self::ejecutarActualizacion(
+            "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
+            [$fechaAhora, $direccionParaEstePedido, $pedidoId]
+        );
     }
 }
