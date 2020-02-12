@@ -1,5 +1,5 @@
 <?php
-francisco
+
 require_once "../_com/comunes-app.php";
 
 if (isset($_REQUEST['agregar']))
