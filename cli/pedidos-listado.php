@@ -15,7 +15,7 @@ $pedidos = DAO::pedidosObtenerTodosPorCliente($clienteId);
     <meta charset="UTF-8">
 </head>
 
-<body>
+<br>
 <h1>Listado de pedidos</h1>
 
 <table border="1">
@@ -26,22 +26,21 @@ $pedidos = DAO::pedidosObtenerTodosPorCliente($clienteId);
         <th>Fecha de confirmación</th>
     </tr>
 
-    <?php foreach ($pedidos as $pedido) { ?>
+    <?php foreach ($pedidos as $pedido) {?>
         <tr>
             <td>
-                <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["id"]?></a>
+                <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["codigoPedido"]?></a>
             </td>
             <td>
-                <p><?=$pedido["direccionEnvio"]?></p>
-            </td>
+                <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["direccionEnvio"]?></a>
             <td>
-                <p><?=$pedido["fechaConfirmacion"]?></p>
+                <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["fechaConfirmacion"]?></a>
             </td>
         </tr>
     <?php } ?>
 
 </table>
-<a href="carrito-ver.php">Ir al carrito</a>
+<a href="carrito-ver.php">Ir al carrito</a> </br>
 <a href="productos-listado.php">Ir al listado de productos</a>
 <?php require "../_com/info-sesion.php"; ?>
 

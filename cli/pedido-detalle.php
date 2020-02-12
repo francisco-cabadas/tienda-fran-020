@@ -55,7 +55,8 @@ $precioTotal = 0;
         <td><p><?=$precioTotal?></p></td>
     </tr>
 </table>
-<a href="carrito-ver.php">Ir al carrito</a>
+<a href="pedidos-listado.php">Volver al listado de pedidos</a> </br>
+<a href="carrito-ver.php">Ir al carrito</a> </br>
 <a href="productos-listado.php">Ir al listado de productos</a>
 <?php require "../_com/info-sesion.php"; ?>
 

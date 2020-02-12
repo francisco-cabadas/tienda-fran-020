@@ -88,11 +88,6 @@ function establecerCookieRecuerdame($identificador, $codigoCookie)
     setcookie("codigoCookie", $codigoCookie, time() + 24*60*60); // Un mes sería: +30*24*60*60
 }
 
-function generarCadenaAleatoria()
-{
-    for ($s = '', $i = 0, $z = strlen($a = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')-1; $i != 32; $x = rand(0,$z), $s .= $a[$x], $i++);
-    return $s;
-}
 
 function generarCookieRecuerdame($email)
 {

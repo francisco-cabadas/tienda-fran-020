@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-02-2020 a las 10:40:02
+-- Tiempo de generación: 12-02-2020 a las 09:49:20
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.3.11
 
@@ -44,9 +44,9 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`id`, `email`, `contrasenna`, `codigoCookie`, `nombre`, `direccion`, `telefono`, `registrado`) VALUES
-(1, 'jlopez@gmail.com', 'j', 'J4PTyau8zvK1EfrwLANAn7dT81tWRtyl', 'José', NULL, NULL, 0),
-(2, 'mgarcia@gmail.com', 'm', NULL, 'María', NULL, NULL, 0),
-(3, 'jfernandez@gmail.com', '1234', 'MPkkCyPr5filHF0VuWilH4v7J6zJuupy', 'Juanito', NULL, NULL, 0),
+(1, 'jlopez@gmail.com', 'j', 'J4PTyau8zvK1EfrwLANAn7dT81tWRtyl', 'José', 'Calle Álvaro de Bazán, 16', NULL, 0),
+(2, 'mgarcia@gmail.com', 'm', NULL, 'María', 'Calle Sánchez Morate, 10', NULL, 0),
+(3, 'jfernandez@gmail.com', '1234', 'MPkkCyPr5filHF0VuWilH4v7J6zJuupy', 'Juanito', 'Calle del Tejo, 20', NULL, 0),
 (4, 'cliente@gmail.com', '1234', NULL, 'Alfonso', 'Avda. Real de Pinto', '621907133', 0);
 
 -- --------------------------------------------------------
@@ -91,19 +91,20 @@ CREATE TABLE `pedido` (
   `id` int(11) NOT NULL,
   `cliente_id` int(11) NOT NULL,
   `direccionEnvio` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `fechaConfirmacion` datetime DEFAULT NULL
+  `fechaConfirmacion` datetime DEFAULT NULL,
+  `codigo_pedido` varchar(8) COLLATE utf8_spanish_ci NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `pedido`
 --
 
-INSERT INTO `pedido` (`id`, `cliente_id`, `direccionEnvio`, `fechaConfirmacion`) VALUES
-(1, 1, 'Calle Gabriel y Galán, 3, Getafe, Madrid', '2020-02-03 14:25:20'),
-(2, 2, 'Calle Arquitectos, 14, Getafe, Madrid', '2019-11-08 21:51:43'),
-(3, 3, 'Calle Pedro Almodóvar, 3, Getafe, Madrid', '2020-01-30 09:13:39'),
-(4, 4, 'Calle los Arcos, 30, Getafe, Madrid', '2020-02-02 16:41:23'),
-(5, 2, 'Calle Teruel, 13, Getafe, Madrid', '2019-12-26 04:44:13');
+INSERT INTO `pedido` (`id`, `cliente_id`, `direccionEnvio`, `fechaConfirmacion`, `codigo_pedido`) VALUES
+(1, 1, 'Calle Gabriel y Galán, 3, Getafe, Madrid', '2020-02-03 14:25:20', '12b30A9d'),
+(2, 2, 'Calle Arquitectos, 14, Getafe, Madrid', '2019-11-08 21:51:43', '0'),
+(3, 3, 'Calle Pedro Almodóvar, 3, Getafe, Madrid', '2020-01-30 09:13:39', '0'),
+(4, 4, 'Calle los Arcos, 30, Getafe, Madrid', '2020-02-02 16:41:23', '0'),
+(5, 2, 'Calle Teruel, 13, Getafe, Madrid', '2019-12-26 04:44:13', '0');
 
 -- --------------------------------------------------------
 
