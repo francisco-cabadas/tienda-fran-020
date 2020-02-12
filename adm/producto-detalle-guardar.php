@@ -12,5 +12,5 @@ $producto->actualizarProducto($id,$nuevoNombre,$nuevaDescripcion,$nuevoPrecio/*,
 
 // TODO: poner <html> y todo para esto, no un echo y ya.
 echo("<p>se ha actualizado correctamente
-        </p><br><a href='productos-listado.php'>volver a la lista</a>");
+        </p><br><a href='../cli/productos-listado.php'>volver a la lista</a>");
 

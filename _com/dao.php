@@ -297,7 +297,7 @@ class DAO
 
     public static function pedidosObtenerTodosPorCliente($clienteId): array
     {
-        $rsPedidos= self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=?", [$clienteId]);
+        $rsPedidos= self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=? AND pedido.fechaConfirmacion IS NOT NULL", [$clienteId]);
         return $rsPedidos;
 
     }

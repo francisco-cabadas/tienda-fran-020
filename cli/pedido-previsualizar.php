@@ -68,7 +68,7 @@ if ($cliente->getDireccion() != null){
     </tbody>
 </table>
 <h3>Dirección de envío</h3>
-<form action="cliente-gestionar.php" method="get">
+<form action="cliente-detalle-guardar.php" method="get">
     <input type="hidden" name="actualizarDireccion" value="true">
     <input type="text" name="direccion" value="<?= $direccion?>" required>
     <input type="submit" value="Actualizar">

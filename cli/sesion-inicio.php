@@ -1,8 +1,8 @@
 <?php
-if (!isset($_REQUEST["noPasar"])) {
-    require_once "../_com/comunes-app.php";
-}
 
+require_once "../_com/requireonces-comunes.php";
+
+if (haySesionIniciada()) redireccionar("../cli/productos-listado.php");
 
 ?>
 

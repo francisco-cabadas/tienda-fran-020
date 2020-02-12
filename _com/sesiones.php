@@ -58,7 +58,7 @@ function garantizarSesion()
                 borrarCookieRecuerdame($email);
 
                 // REDIRIGIR A INICIAR SESIÓN PARA IMPEDIR QUE ESTE USUARIO VISUALICE CONTENIDO PRIVADO.
-                redireccionar("../cli/inicio-sesion.php");
+                redireccionar("../cli/sesion-inicio.php");
             }
         } else if (vieneFormularioDeInicioDeSesion()) { // SÍ hay formulario enviado. Lo comprobaremos contra la BD.
             $cliente = DAO::clienteObtenerPorEmailYContrasenna($_REQUEST['email'], $_REQUEST['contrasenna']);
@@ -71,11 +71,11 @@ function garantizarSesion()
                 }
                 // >>> Y DEJAMOS QUE SE CONTINÚE EJECUTANDO EL PHP QUE NOS LLAMÓ... >>>
             } else { // Si vienen 0 filas, no existe ese usuario o la contraseña no coincide.
-                redireccionar("../cli/inicio-sesion.php?incorrecto=true");
+                redireccionar("../cli/sesion-inicio.php?incorrecto=true");
             }
         } else { // NO hay ni sesión, ni cookie, ni formulario enviado.
             // REDIRIGIMOS PARA QUE NO SE VISUALICE CONTENIDO PRIVADO:
-            redireccionar("../cli/inicio-sesion.php?noPasar");
+            redireccionar("../cli/sesion-inicio.php");
         }
     }
 }

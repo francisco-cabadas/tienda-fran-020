@@ -48,7 +48,6 @@ if (isset($_REQUEST["agregado"])) {
 </table>
 
 <a href="carrito-ver.php">Ir al carrito</a>
-<a href='../adm/producto-annadir.php'>Añadir producto</a>
 
 <?php require "../_com/info-sesion.php"; ?>
 
