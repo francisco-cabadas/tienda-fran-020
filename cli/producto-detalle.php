@@ -20,15 +20,20 @@ $producto = DAO::productoObtenerPorId($id);
     <title>Document</title>
 </head>
 <body>
-    <p>Nombre producto<?=$producto->getNombre()?></p>
-    <p>Descripción<?=$producto->getDescripcion()?></p>
+    <form>
+        <table border="1">
+            <tr><td><div><label>NOMBRE</label><td><input value="<?=$producto->getNombre()?>"></div></td></tr>
+            <tr><td><div><label>DESCRIPCIÓN</label><td><input value="<?=$producto->getDescripcion()?>"></div></td></tr>
+            <tr><td><div><label>PRECIO</label><td><input value="<?=$producto->getPrecio()?>"></div></td></tr>
 
-    <a href="productos-listado.php">Volver listado</a>
+    </form>
 
     <form action="carrito-gestionar-producto.php" method="get">
-        <input type="hidden" name="productoId" value="<?=$producto->getId()?>">
-        <input type="number" min="1" value="1" name="variacionUnidades">
-        <input type="submit" name="agregar" value="annadir">
+        <tr><td><label>UNIDADES: </label><input type="hidden" name="productoId" value="<?=$producto->getId()?>"></td>
+        <td><input type="number" min="1" value="1" name="variacionUnidades"></td></tr>
+        </table>
+        <input type="submit" name="agregar" value="añadir">
+
     </form>
 </body>
 
