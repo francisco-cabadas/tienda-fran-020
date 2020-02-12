@@ -29,7 +29,7 @@ $pedidos = DAO::pedidosObtenerTodosPorCliente($clienteId);
     <?php foreach ($pedidos as $pedido) {?>
         <tr>
             <td>
-                <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["codigoPedido"]?></a>
+                <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["codigo_pedido"]?></a>
             </td>
             <td>
                 <a href='pedido-detalle.php?id=<?=$pedido["id"]?>'><?=$pedido["direccionEnvio"]?></a>

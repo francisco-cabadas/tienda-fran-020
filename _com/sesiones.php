@@ -91,16 +91,9 @@ function establecerCookieRecuerdame($identificador, $codigoCookie)
 
 function generarCookieRecuerdame($email)
 {
-<<<<<<< Updated upstream
     // Creamos un código cookie muy complejo (no necesariamente único).
     $codigoCookie = generarCadenaAleatoria(32); // Random...
     DAO::clienteGuardarCodigoCookie($email, $codigoCookie);
-=======
-    // Creamos un código cookie muy complejo (pero no necesariamente único).
-    $codigoCookie = generarCadenaAleatoria(32); // Random...
-
-    // TODO convertir a nuevo modelo DAO...
->>>>>>> Stashed changes
 
     // TODO Para una seguridad óptima convendriá anotar en la BD la fecha de caducidad de la cookie y no aceptar ninguna cookie pasada dicha fecha.
 

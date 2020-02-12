@@ -101,10 +101,10 @@ CREATE TABLE `pedido` (
 
 INSERT INTO `pedido` (`id`, `cliente_id`, `direccionEnvio`, `fechaConfirmacion`, `codigo_pedido`) VALUES
 (1, 1, 'Calle Gabriel y Galán, 3, Getafe, Madrid', '2020-02-03 14:25:20', '12b30A9d'),
-(2, 2, 'Calle Arquitectos, 14, Getafe, Madrid', '2019-11-08 21:51:43', '0'),
-(3, 3, 'Calle Pedro Almodóvar, 3, Getafe, Madrid', '2020-01-30 09:13:39', '0'),
-(4, 4, 'Calle los Arcos, 30, Getafe, Madrid', '2020-02-02 16:41:23', '0'),
-(5, 2, 'Calle Teruel, 13, Getafe, Madrid', '2019-12-26 04:44:13', '0');
+(2, 2, 'Calle Arquitectos, 14, Getafe, Madrid', '2019-11-08 21:51:43', '5177atyj'),
+(3, 3, 'Calle Pedro Almodóvar, 3, Getafe, Madrid', '2020-01-30 09:13:39', 'j7hy65k4'),
+(4, 4, 'Calle los Arcos, 30, Getafe, Madrid', '2020-02-02 16:41:23', 'kihtg987'),
+(5, 2, 'Calle Teruel, 13, Getafe, Madrid', '2019-12-26 04:44:13', 'lp8ju76');
 
 -- --------------------------------------------------------
 

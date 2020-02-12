@@ -40,7 +40,7 @@ class DAO
         return $select->fetchAll();
     }
 
-    private static function ejecutarActualizacion(string $sql, array $parametros): void
+    public static function ejecutarActualizacion(string $sql, array $parametros): void
     {
         if (!isset(self::$pdo)) {
             self::$pdo = self::obtenerPdoConexionBd();
@@ -291,10 +291,11 @@ class DAO
     {
         $direccion = DAO::clienteObtenerPorId($_SESSION["id"])->getDireccion();
         $fechaAhora = obtenerFecha();
+        $codigoPedido = generarCadenaAleatoria(8);
         self::pedidoFijarPrecios($pedidoId);
         self::ejecutarActualizacion(
-            "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
-            [$fechaAhora, $direccion, $pedidoId]
+            "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=?, codigo_pedido = ? WHERE id=?",
+            [$fechaAhora, $direccion, $pedidoId, $codigoPedido]
         );
     }
 
@@ -308,7 +309,7 @@ class DAO
 
     public static function pedidosObtenerTodosPorCliente($clienteId): array
     {
-        $rsPedidos= self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=? AND pedido.fechaConfirmacion IS NOT NULL", [$clienteId]);
+        $rsPedidos= self::ejecutarConsulta("SELECT pedido.id, pedido.direccionEnvio, pedido.fechaConfirmacion, pedido.codigo_pedido FROM pedido, cliente WHERE pedido.cliente_id=cliente.id AND pedido.cliente_id=? AND pedido.fechaConfirmacion IS NOT NULL", [$clienteId]);
         return $rsPedidos;
 
     }
