@@ -9,6 +9,8 @@ $direccion = "";
 
 if ($cliente->getDireccion() != null){
     $direccion = $cliente->getDireccion();
+}else{
+    $direccion= "No tiene dirección peredeterminada, especifíquela abajo.";
 }
 
 ?>
