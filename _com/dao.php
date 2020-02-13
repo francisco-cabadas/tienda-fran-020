@@ -31,20 +31,16 @@ class DAO
 
     private static function ejecutarConsulta(string $sql, array $parametros): array
     {
-        if (!isset(self::$pdo)) {
-            self::$pdo = self::obtenerPdoConexionBd();
-        }
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
 
         $select = self::$pdo->prepare($sql);
         $select->execute($parametros);
         return $select->fetchAll();
     }
 
-    public static function ejecutarActualizacion(string $sql, array $parametros): void
+    private static function ejecutarActualizacion(string $sql, array $parametros): void
     {
-        if (!isset(self::$pdo)) {
-            self::$pdo = self::obtenerPdoConexionBd();
-        }
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
 
         $actualizacion = self::$pdo->prepare($sql);
         $actualizacion->execute($parametros);
@@ -56,25 +52,30 @@ class DAO
 
     private static function crearClienteDesdeRs(array $rs): Cliente
     {
-        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"],
-            $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
     }
 
     public static function clienteObtenerPorId(int $id): Cliente
     {
         $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE id=?", [$id]);
-        return self::crearClienteDesdeRs($rs);
+        if ($rs) return self::crearClienteDesdeRs($rs);
+        else return null;
     }
 
     public static function clienteObtenerPorEmailYContrasenna($email, $contrasenna): Cliente
     {
-        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE BINARY email=? AND BINARY contrasenna=?",
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE email=? AND BINARY contrasenna=?",
             [$email, $contrasenna]);
         if ($rs) {
-            return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+            return self::crearClienteDesdeRs($rs);
         } else {
             return null;
         }
+    }
+
+    public static function clienteObtenerPorEmailYCodigoCookie($email, $codigoCookie): Cliente
+    {
+        // TODO Por hacer.
     }
 
     public static function clienteGuardarCodigoCookie(string $email, string $codigoCookie)

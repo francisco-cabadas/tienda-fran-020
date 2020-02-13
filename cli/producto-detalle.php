@@ -2,9 +2,7 @@
 
 require_once "../_com/comunes-app.php";
 
-$id = $_REQUEST["id"];
-
-$producto = DAO::productoObtenerPorId($id);
+$producto = DAO::productoObtenerPorId($_REQUEST["id"]);
 
 ?>
 

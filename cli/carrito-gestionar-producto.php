@@ -6,14 +6,18 @@ if (isset($_REQUEST['agregar']))
 {
     $carrito = DAO::carritoObtenerParaCliente($_SESSION["id"]);
     $variacionUnidades=1;
-    if ($_REQUEST["variacionUnidades"]) {
+    if ($_REQUEST["variacionUnidades"])
+    {
         $variacionUnidades = $_REQUEST["variacionUnidades"];
     }
-    if (!$carrito){
-        $carrito= DAO::carritoCrearParaCliente($_SESSION["id"]);
+    if (!$carrito)
+    {
+        $carrito = DAO::carritoCrearParaCliente($_SESSION["id"]);
     }
-    foreach ($carrito->getLineas() as $linea){
-        if ($linea->getProductoId() == $_REQUEST['productoId']){
+    foreach ($carrito->getLineas() as $linea)
+    {
+        if ($linea->getProductoId() == $_REQUEST['productoId'])
+        {
             DAO::carritoVariarUnidadesProducto($_SESSION["id"], $_REQUEST['productoId'], $variacionUnidades);
             redireccionar("productos-listado.php");
         }
