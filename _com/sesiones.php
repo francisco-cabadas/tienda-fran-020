@@ -81,10 +81,10 @@ function garantizarSesion()
     }
 }
 
-function establecerCookieRecuerdame($identificador, $codigoCookie)
+function establecerCookieRecuerdame($email, $codigoCookie)
 {
     // Enviamos el código cookie al cliente, junto con su identificador.
-    setcookie("email", $identificador, time() + 24*60*60); // Un mes sería: +30*24*60*60
+    setcookie("email", $email, time() + 24*60*60); // Un mes sería: +30*24*60*60
     setcookie("codigoCookie", $codigoCookie, time() + 24*60*60); // Un mes sería: +30*24*60*60
 }
 
@@ -115,4 +115,5 @@ function anotarDatosSesionRam($cliente)
     $_SESSION["id"] = $cliente->getId();
     $_SESSION["email"] = $cliente->getEmail();
     $_SESSION["nombre"] = $cliente->getNombre();
+    // TODO: Para implementar una superclase Usuario para Cliente y Administrador, aquí habría que añadir algo como esto: $_SESSION["tipoUsuario"] = "ADM" / "CLI";
 }

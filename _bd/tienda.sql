@@ -2,8 +2,8 @@
 -- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 12-02-2020 a las 09:49:20
+-- Servidor: localhost
+-- Tiempo de generación: 13-02-2020 a las 11:17:54
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.3.11
 
@@ -12,15 +12,12 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Base de datos: `tienda`
 --
+DROP DATABASE `tienda`;
+CREATE DATABASE `tienda` DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+USE `tienda`;
 
 -- --------------------------------------------------------
 
@@ -28,6 +25,7 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `cliente`
 --
 
+DROP TABLE IF EXISTS `cliente`;
 CREATE TABLE `cliente` (
   `id` int(11) NOT NULL,
   `email` varchar(60) COLLATE utf8_spanish_ci NOT NULL,
@@ -40,11 +38,16 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
+-- Truncar tablas antes de insertar `cliente`
+--
+
+TRUNCATE TABLE `cliente`;
+--
 -- Volcado de datos para la tabla `cliente`
 --
 
 INSERT INTO `cliente` (`id`, `email`, `contrasenna`, `codigoCookie`, `nombre`, `direccion`, `telefono`, `registrado`) VALUES
-(1, 'jlopez@gmail.com', 'j', 'J4PTyau8zvK1EfrwLANAn7dT81tWRtyl', 'José', 'Calle Álvaro de Bazán, 16', NULL, 0),
+(1, 'jlopez@gmail.com', 'j', 'J4PTyau8zvK1EfrwLANAn7dT81tWRtyl', 'José', 'Calle Álvaro de Bazán 17.', NULL, 0),
 (2, 'mgarcia@gmail.com', 'm', NULL, 'María', 'Calle Sánchez Morate, 10', NULL, 0),
 (3, 'jfernandez@gmail.com', '1234', 'MPkkCyPr5filHF0VuWilH4v7J6zJuupy', 'Juanito', 'Calle del Tejo, 20', NULL, 0),
 (4, 'cliente@gmail.com', '1234', NULL, 'Alfonso', 'Avda. Real de Pinto', '621907133', 0);
@@ -55,6 +58,7 @@ INSERT INTO `cliente` (`id`, `email`, `contrasenna`, `codigoCookie`, `nombre`, `
 -- Estructura de tabla para la tabla `linea`
 --
 
+DROP TABLE IF EXISTS `linea`;
 CREATE TABLE `linea` (
   `pedido_id` int(11) NOT NULL,
   `producto_id` int(11) NOT NULL,
@@ -62,6 +66,11 @@ CREATE TABLE `linea` (
   `precioUnitario` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Truncar tablas antes de insertar `linea`
+--
+
+TRUNCATE TABLE `linea`;
 --
 -- Volcado de datos para la tabla `linea`
 --
@@ -79,7 +88,9 @@ INSERT INTO `linea` (`pedido_id`, `producto_id`, `unidades`, `precioUnitario`) V
 (3, 12, 1, NULL),
 (4, 16, 1, NULL),
 (4, 19, 1, NULL),
-(4, 20, 2, NULL);
+(4, 20, 2, NULL),
+(14, 12, 1, '0.79'),
+(14, 19, 1, '159.99');
 
 -- --------------------------------------------------------
 
@@ -87,6 +98,7 @@ INSERT INTO `linea` (`pedido_id`, `producto_id`, `unidades`, `precioUnitario`) V
 -- Estructura de tabla para la tabla `pedido`
 --
 
+DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE `pedido` (
   `id` int(11) NOT NULL,
   `cliente_id` int(11) NOT NULL,
@@ -96,6 +108,11 @@ CREATE TABLE `pedido` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
+-- Truncar tablas antes de insertar `pedido`
+--
+
+TRUNCATE TABLE `pedido`;
+--
 -- Volcado de datos para la tabla `pedido`
 --
 
@@ -104,7 +121,8 @@ INSERT INTO `pedido` (`id`, `cliente_id`, `direccionEnvio`, `fechaConfirmacion`,
 (2, 2, 'Calle Arquitectos, 14, Getafe, Madrid', '2019-11-08 21:51:43', '5177atyj'),
 (3, 3, 'Calle Pedro Almodóvar, 3, Getafe, Madrid', '2020-01-30 09:13:39', 'j7hy65k4'),
 (4, 4, 'Calle los Arcos, 30, Getafe, Madrid', '2020-02-02 16:41:23', 'kihtg987'),
-(5, 2, 'Calle Teruel, 13, Getafe, Madrid', '2019-12-26 04:44:13', 'lp8ju76');
+(5, 2, 'Calle Teruel, 13, Getafe, Madrid', '2019-12-26 04:44:13', 'lp8ju76'),
+(14, 1, 'Calle Álvaro de Bazán 17.', '2020-02-13 10:52:49', '3gRe0dGD');
 
 -- --------------------------------------------------------
 
@@ -112,6 +130,7 @@ INSERT INTO `pedido` (`id`, `cliente_id`, `direccionEnvio`, `fechaConfirmacion`,
 -- Estructura de tabla para la tabla `producto`
 --
 
+DROP TABLE IF EXISTS `producto`;
 CREATE TABLE `producto` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
@@ -119,6 +138,11 @@ CREATE TABLE `producto` (
   `precio` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Truncar tablas antes de insertar `producto`
+--
+
+TRUNCATE TABLE `producto`;
 --
 -- Volcado de datos para la tabla `producto`
 --
@@ -189,7 +213,7 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -214,7 +238,3 @@ ALTER TABLE `linea`
 ALTER TABLE `pedido`
   ADD CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -292,10 +292,11 @@ class DAO
         }
 
         $fechaAhora = obtenerFecha();
+        $codigoPedido = generarCadenaAleatoria(8);
         self::pedidoFijarPrecios($pedidoId);
         self::ejecutarActualizacion(
-            "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=? WHERE id=?",
-            [$fechaAhora, $direccionParaEstePedido, $pedidoId]
+            "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=?, codigo_pedido=? WHERE id=?",
+            [$fechaAhora, $direccionParaEstePedido, $codigoPedido, $pedidoId]
         );
     }
 }
