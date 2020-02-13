@@ -8,9 +8,15 @@ $nuevoNombre = $_REQUEST["nombre"];
 $nuevaDescripcion = $_REQUEST["descripcion"];
 $nuevoPrecio = $_REQUEST["precio"];
 
-$producto->actualizarProducto($id,$nuevoNombre,$nuevaDescripcion,$nuevoPrecio/*,$actualizaStock*/);
+DAO::productoActualizar($id,$nuevoNombre,$nuevaDescripcion,$nuevoPrecio/*,$actualizaStock*/);
+?>
 
-// TODO: poner <html> y todo para esto, no un echo y ya.
-echo("<p>se ha actualizado correctamente
-        </p><br><a href='../cli/productos-listado.php'>volver a la lista</a>");
+
+
+<html>
+<body>
+<p>se ha actualizado correctamente el producto
+</p><br><a href='productos-listado.php'>volver a la lista</a>
+</body>
+</html>
 
