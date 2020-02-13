@@ -6,7 +6,14 @@ $nombre = $_REQUEST["nombre"];
 $descripcion = $_REQUEST["descripcion"];
 $precio = $_REQUEST["precio"];
 $producto = new producto( NULL,$nombre, $descripcion, $precio);
+?>
 
-// TODO Echo a secas no. Hacer todo el <html>...
-echo("<p>se ha creado un producto
-        </p><br><a href='../cli/productos-listado.php'>volver a la lista</a>");
+
+<html>
+<body>
+<p>se ha creado correctamente el producto
+</p><br><a href='productos-listado.php'>volver a la lista</a>
+</body>
+</html>
+
+

@@ -124,6 +124,7 @@ class Producto extends Dato
         }
     }
 
+
     public function getNombre(): string
     {
         return $this->nombre;
