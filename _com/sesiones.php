@@ -25,54 +25,49 @@ function vieneFormularioDeInicioDeSesion()
 
 function vieneCookieRecuerdame()
 {
-    return isset($_COOKIE["identificador"]);
+    return isset($_COOKIE["email"]);
 }
 
-// TODO No funciona bien el "recuérdame": hay una cookie (USAR Edit This Cookie para verla y tal) pero no me la canjean por una sesión abierta, ni me la borran.
 function garantizarSesion()
 {
     sessionStartSiNoLoEsta();
 
     if (haySesionIniciada()) {
         // Si hay cookie de "recuérdame", la renovamos.
-        if (isset($_COOKIE["email"])) {
+        if (vieneCookieRecuerdame()) {
             establecerCookieRecuerdame($_COOKIE["email"], $_COOKIE["codigoCookie"]);
         }
 
         // >>> NO HACEMOS NADA MÁS. DEJAMOS QUE SE CONTINÚE EJECUTANDO EL PHP QUE NOS LLAMÓ... >>>
     } else { // NO hay sesión iniciada.
-        if (vieneCookieRecuerdame()) {
-            $email = $_COOKIE["email"];
-            $codigoCookie = $_COOKIE["codigoCookie"];
-
-            // Comprobaremos la información contra la BD.
-            $cliente = DAO::____($email, $codigoCookie); // TODO Hacer esto con DAO.
-
-            if ($cliente) { // Si viene un cliente es que existe el cliente y coincide el código cookie. Daremos por iniciada la sesión.
-                // Recuperar los datos adicionales del usuario que acaba de iniciar sesión.
-                anotarDatosSesionRam($cliente);
-
-                // Renovar la cookie (código y caducidad).
-                generarCookieRecuerdame($email);
-            } else { // Parecía que venía una cookie válida pero... No es válida o pasa algo raro.
-                // Borrar la cookie mala que nos están enviando (si no, la enviarán otra vez, y otra, y otra...)
-                borrarCookieRecuerdame($email);
-
-                // REDIRIGIR A INICIAR SESIÓN PARA IMPEDIR QUE ESTE USUARIO VISUALICE CONTENIDO PRIVADO.
-                redireccionar("../cli/sesion-inicio.php");
-            }
-        } else if (vieneFormularioDeInicioDeSesion()) { // SÍ hay formulario enviado. Lo comprobaremos contra la BD.
+        if (vieneFormularioDeInicioDeSesion()) { // SÍ hay formulario enviado. Lo comprobaremos contra la BD.
             $cliente = DAO::clienteObtenerPorEmailYContrasenna($_REQUEST['email'], $_REQUEST['contrasenna']);
 
             if ($cliente) { // Si viene un cliente es que el inicio de sesión ha sido exitoso.
                 anotarDatosSesionRam($cliente);
 
                 if (isset($_REQUEST["recuerdame"])) { // Si han marcado el checkbox de recordar:
-                    generarCookieRecuerdame($cliente->getEmail());
+                    generarCookieRecuerdame($cliente);
                 }
                 // >>> Y DEJAMOS QUE SE CONTINÚE EJECUTANDO EL PHP QUE NOS LLAMÓ... >>>
-            } else { // Si vienen 0 filas, no existe ese usuario o la contraseña no coincide.
+            } else { // Si cliente es null, o no existe ese cliente o la contraseña no coincide.
                 redireccionar("../cli/sesion-inicio.php?incorrecto=true");
+            }
+        } else if (vieneCookieRecuerdame()) {
+            $cliente = DAO::clienteObtenerPorEmailYCodigoCookie($_COOKIE["email"], $_COOKIE["codigoCookie"]); // TODO Hacer esto con DAO.
+
+            if ($cliente) { // Si viene un cliente es que existe el cliente y coincide el código cookie. Daremos por iniciada la sesión.
+                // Recuperar los datos adicionales del usuario que acaba de iniciar sesión.
+                anotarDatosSesionRam($cliente);
+
+                // Renovar la cookie (código y caducidad).
+                generarCookieRecuerdame($cliente);
+            } else { // Parecía que venía una cookie válida pero... No es válida o pasa algo raro.
+                // Borrar la cookie mala que nos están enviando (si no, la enviarán otra vez, y otra, y otra...)
+                borrarCookieRecuerdame($cliente->getEmail());
+
+                // REDIRIGIR A INICIAR SESIÓN PARA IMPEDIR QUE ESTE USUARIO VISUALICE CONTENIDO PRIVADO.
+                redireccionar("../cli/sesion-inicio.php");
             }
         } else { // NO hay ni sesión, ni cookie, ni formulario enviado.
             // REDIRIGIMOS PARA QUE NO SE VISUALICE CONTENIDO PRIVADO:
@@ -89,15 +84,15 @@ function establecerCookieRecuerdame($email, $codigoCookie)
 }
 
 
-function generarCookieRecuerdame($email)
+function generarCookieRecuerdame($cliente)
 {
     // Creamos un código cookie muy complejo (no necesariamente único).
     $codigoCookie = generarCadenaAleatoria(32); // Random...
-    DAO::clienteGuardarCodigoCookie($email, $codigoCookie);
+    DAO::clienteGuardarCodigoCookie($cliente->getEmail(), $codigoCookie);
 
     // TODO Para una seguridad óptima convendriá anotar en la BD la fecha de caducidad de la cookie y no aceptar ninguna cookie pasada dicha fecha.
 
-    establecerCookieRecuerdame($email, $codigoCookie);
+    establecerCookieRecuerdame($cliente->getEmail(), $codigoCookie);
 }
 
 function borrarCookieRecuerdame($email)
@@ -116,4 +111,11 @@ function anotarDatosSesionRam($cliente)
     $_SESSION["email"] = $cliente->getEmail();
     $_SESSION["nombre"] = $cliente->getNombre();
     // TODO: Para implementar una superclase Usuario para Cliente y Administrador, aquí habría que añadir algo como esto: $_SESSION["tipoUsuario"] = "ADM" / "CLI";
+}
+
+function destruirSesionYCookies($email)
+{
+    session_destroy();
+
+    borrarCookieRecuerdame($email);
 }

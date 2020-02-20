@@ -75,10 +75,16 @@ class DAO
 
     public static function clienteObtenerPorEmailYCodigoCookie($email, $codigoCookie): Cliente
     {
-        // TODO Por hacer.
+        $rs = self::ejecutarConsulta("SELECT * FROM cliente WHERE email=? AND BINARY codigoCookie=?",
+            [$email, $codigoCookie]);
+        if ($rs) {
+            return self::crearClienteDesdeRs($rs);
+        } else {
+            return null;
+        }
     }
 
-    public static function clienteGuardarCodigoCookie(string $email, string $codigoCookie)
+    public static function clienteGuardarCodigoCookie(string $email, string $codigoCookie = null)
     {
         if ($codigoCookie != null)
         {
