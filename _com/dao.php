@@ -1,6 +1,11 @@
 <?php
 
-require_once "clases.php";
+require_once "../_com/modelos/Cliente.php";
+require_once "../_com/modelos/Producto.php";
+require_once "../_com/modelos/LineaCarrito.php";
+require_once "../_com/modelos/Carrito.php";
+require_once "../_com/modelos/LineaPedido.php";
+require_once "../_com/modelos/Pedido.php";
 require_once "utilidades.php";
 
 class DAO
