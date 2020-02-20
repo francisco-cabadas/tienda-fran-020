@@ -1,7 +1,6 @@
 <?php
 
 require_once "dao.php";
-//require_once "LineaPedido.php";
 require_once "utilidades.php";
 
 function sessionStartSiNoLoEsta()
