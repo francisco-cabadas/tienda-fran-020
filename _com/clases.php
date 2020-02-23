@@ -2,6 +2,7 @@
 
 abstract class Dato
 {
+    
 }
 
 trait Identificable
