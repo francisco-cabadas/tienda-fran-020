@@ -3,6 +3,9 @@
 require_once "../_com/comunes-app.php";
 
 $productos = DAO::productoObtenerTodos();
+$usuario=DAO::clienteObtenerPorId($_SESSION["id"]);
+$adminOno=DAO::adminComprobar($_SESSION["id"]);
+
 
 ?>
 
@@ -48,6 +51,11 @@ if (isset($_REQUEST["agregado"])) {
 </table>
 
 <a href="carrito-ver.php">Ir al carrito</a>
+
+<?php if($adminOno=="true"){ ?>
+<a href='../adm/producto-annadir.php'>añadir producto </a>
+<?php } ?>
+
 
 <?php require "../_com/info-sesion.php"; ?>
 

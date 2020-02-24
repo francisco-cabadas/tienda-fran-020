@@ -2,6 +2,8 @@
 
 require_once "../_com/comunes-app.php";
 
+
+// lo utiliza pruducto-listado para añadir 1 unidad al carrito cuando le damos a comprar
 if (isset($_REQUEST['agregar']))
 {
     $carrito = DAO::carritoObtenerParaCliente($_SESSION["id"]);

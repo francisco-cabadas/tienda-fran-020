@@ -29,8 +29,9 @@ class Cliente extends Dato {
     private  $nombre;
     private  $telefono;
     private  $direccion;
+    private  $registrado;
 
-    public function __construct($id, $email, $contrasenna, $codigoCookie, $nombre, $telefono, $direccion)
+    public function __construct($id, $email, $contrasenna, $codigoCookie, $nombre, $telefono, $direccion, $registrado)
     {
         $this->setId($id);
         $this->setEmail($email);
@@ -39,6 +40,7 @@ class Cliente extends Dato {
         $this->setNombre($nombre);
         $this->setTelefono($telefono);
         $this->setDireccion($direccion);
+        $this->setRegistrado($registrado);
 
     }
 
@@ -101,6 +103,18 @@ class Cliente extends Dato {
     {
         $this->direccion = $direccion;
     }
+
+    public function getRegistrado()
+    {
+        return $this->registrado;
+    }
+
+
+    public function setRegistrado($registrado)
+    {
+        $this->registrado = $registrado;
+    }
+
 }
 
 class Producto extends Dato

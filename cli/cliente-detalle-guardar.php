@@ -1,5 +1,8 @@
 <?php
 
+
+//  guarda en la bdd la confirmación del pedido, añadiendo la dirección de envío
+
 require_once "../_com/comunes-app.php";
 
 if (isset($_REQUEST['sobreescribirDireccion']) && isset($_REQUEST['direccion']))

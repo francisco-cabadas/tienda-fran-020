@@ -2,6 +2,9 @@
 
 require_once "../_com/comunes-app.php";
 
+
+// recibe confirmación del pedido aceptado, y lo graba en la bdd
+
 if (isset($_REQUEST['confirmado']) && $_REQUEST['direccion'] == ""){
     $pedidoId = DAO::carritoObtenerId($_SESSION["id"]);
     $cliente = DAO::clienteObtenerPorId($_SESSION["id"]);

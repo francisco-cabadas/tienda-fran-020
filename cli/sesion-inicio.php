@@ -18,7 +18,7 @@ if (haySesionIniciada()) redireccionar("../cli/productos-listado.php");
 
 <?php
 if (isset($_REQUEST["incorrecto"])) {
-    echo "<p>Usuario o contraseña iincorrectos.</p>";
+    echo "<p>Usuario o contraseña incorrectos.</p>";
 }
 if (isset($_REQUEST["sesionCerrada"])) {
     echo "<p>Ha salido correctamente. Su sesión está ahora cerrada.</p>";

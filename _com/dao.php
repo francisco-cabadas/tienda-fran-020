@@ -52,7 +52,7 @@ class DAO
 
     private static function crearClienteDesdeRs(array $rs): Cliente
     {
-        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"]);
+        return new Cliente($rs[0]["id"], $rs[0]["email"], $rs[0]["contrasenna"], $rs[0]["codigoCookie"], $rs[0]["nombre"], $rs[0]["telefono"], $rs[0]["direccion"], $rs[0]["registrado"]);
     }
 
     public static function clienteObtenerPorId(int $id): Cliente
@@ -205,6 +205,7 @@ class DAO
         }
     }
 
+    //añade mas unidades o menos en el carrito se utiliza en carrito-ver
     public static function carritoEstablecerUnidadesProducto($productoId, $nuevaCantidad, $pedidoId): void
     {
         $udsIniciales = self::carritoObtenerUnidadesProducto($pedidoId, $productoId);
@@ -249,6 +250,7 @@ class DAO
 
     /* LINEA */
 
+    //fija los precios del pedido confirmado(lo utiliza pedido-crear)
     private static function lineaFijarPrecio($productoId, $pedidoId)
     {
         $precio = self::productoObtenerPorId($productoId)->getPrecio();
@@ -257,6 +259,7 @@ class DAO
             [$precio, $productoId, $pedidoId]
         );
     }
+
 
     public static function lineaEliminar($pedidoId, $productoId)
     {
@@ -290,6 +293,8 @@ class DAO
         }
     }
 
+
+    //  metodo que graba un pedido confirmado en la bdd con codigo de pedido...
     public static function pedidoConfirmar(int $pedidoId, $direccionEspecificada)
     {
         if (isset($direccionEspecificada)) { // Si nos han indicado una dirección, la usamos para el pedido.
@@ -305,5 +310,14 @@ class DAO
             "UPDATE pedido SET fechaConfirmacion=?, direccionEnvio=?, codigo_pedido=? WHERE id=?",
             [$fechaAhora, $direccionParaEstePedido, $codigoPedido, $pedidoId]
         );
+    }
+
+    public static function adminComprobar($id){
+        $cliente=self::clienteObtenerPorId($id);
+        if($cliente->getRegistrado()==1){
+            return "true";
+        }else{
+            return "false";
+        }
     }
 }
